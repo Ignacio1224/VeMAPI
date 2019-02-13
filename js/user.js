@@ -1,0 +1,78 @@
+class User {
+    
+    /**
+     * Constructor
+     * @param {String} email 
+     * @param {Number} phone 
+     * @param {String} password 
+     * @param {String} token
+     * @param {Vehicle} vehicle
+     * @param {Array} workshop 
+     */
+    constructor (email, phone, password = null, token = null) {
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.token = token;
+        this.workshop = [];
+    };
+
+
+    /**
+     * Get Email
+     * Public
+     * @returns {String}
+     */
+    GetEmail () {
+        return this.email;
+    };
+
+    /**
+     * Get Phone
+     * Public
+     * @returns {Number}
+     */
+    GetPhone () {
+        return this.phone;
+    };
+
+    /**
+     * Get Token
+     * Public
+     * @returns {String}
+     */
+    GetToken () {
+        return this.token;
+    };
+
+
+    /**
+     * Generate JSON
+     * Public
+     * @returns {JSON}
+     */ 
+    GenerateJSON () {
+        const user = {
+            email : this.email,
+            telefono : this.phone,
+            password : this.password
+        };
+        return user;
+    };
+
+
+    /**
+     * User
+     * Public
+     * @returns {Object}
+     */
+    User () {
+        const user = {
+            email : this.email,
+            phone : this.phone,
+            token : this.token
+        };
+        return user;
+    };
+
+};
