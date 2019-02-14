@@ -59,7 +59,7 @@
             </p>
         </div>
     </ons-page>
-    
+
     <ons-splitter id="VeMAPI">
         <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
             <ons-page>
@@ -133,6 +133,33 @@
                     <ons-toolbar-button class="bttnMenu" onclick="EndSession();">Terminar sesión</ons-toolbar-button>
                 </div>
             </ons-toolbar>
+
+            <ons-card>
+                <div class="title">
+                    Nuevo Vehículo
+                </div>
+                <img src="../img/addImage.png" alt="Add Image" style="width: 100%">
+                <div class="content">
+                    <div>
+                        <ons-button>
+                            <ons-icon icon="ion-image"></ons-icon>
+                        </ons-button>
+                    </div>
+                    <ons-list id="listNewVehicle">
+                        <ons-list-item>
+                            <ons-input id="V-car_registration" modifier="underbar" type="text" placeholder="Matrícula"
+                                float></ons-input>
+                        </ons-list-item>
+                        <ons-list-item>
+                            <ons-input id="V-description" modifier="underbar" type="text" placeholder="Descripción"
+                                float></ons-input>
+                        </ons-list-item>
+                    </ons-list>
+                    <p style="text-align: center; margin-top: 30px;">
+                        <ons-button onclick="RegisterVehicle();">Registrar</ons-button>
+                    </p>
+                </div>
+            </ons-card>
         </ons-page>
     </template>
 

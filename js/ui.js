@@ -28,7 +28,7 @@ function LogIn () {
         ClearInputs('LogIn');
         ToggleWindows(LV);
     } else {
-        ShowModal('Incorrect email or password.');
+        ShowModal('Usuario o clave incorrecto');
     }
 };
 
@@ -36,8 +36,21 @@ function SignIn (v = false) {
     if (!v) {
         ToggleWindows(LS);
     } else {
+        const sEmail = $('#S-email').val();
+        const sPassword = $('#S-password').val();
+        const sPhone = $('#S-phone').val();
 
+        if (sEmail == '' || sPassword == '' || sPhone == '') {
+            ShowModal('Los campos no pueden estar vacíos');
+        } else {
+            ClearInputs('SignIn');
+            console.log('Sign In');
+        }
     }
+}
+
+function RegisterVehicle () {
+    console.log('Add Vehicle');
 }
 
 /**

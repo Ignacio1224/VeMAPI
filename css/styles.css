@@ -1,3 +1,12 @@
 .bttnMenu {
     font-size: 0.8em !important;
 }
+
+#listNewVehicle {
+    margin-top: 1em;
+}
+
+img {
+    width: 12em;
+    height: 14em;
+}
