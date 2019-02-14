@@ -16,9 +16,13 @@ ons.ready(() => {
             .then(menu.close.bind(menu));
     };
 
+
+    // LogIn Page
     $('#SignIn').hide();
     $('#VeMAPI').hide();
+
 });
+
 
 function LogIn () {
     let email = $('#L-email').val();
