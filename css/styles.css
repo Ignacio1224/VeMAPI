@@ -10,3 +10,29 @@ img {
     width: 12em;
     height: 14em;
 }
+
+.M-tab {
+    width: 49% !important;
+    margin-top: 0.4em !important;
+    background-color: #bcc4d1 !important;
+}
+.M-tab:first-of-type {
+    margin-left: 0.1em;
+}
+
+.M-tab-active {
+    background-color: #368ebd !important;
+}
+
+#M-View {
+    display: none;
+    padding: 1em;
+}
+
+#M-View h2 {
+    text-align: center;
+}
+
+#M-New {
+    padding: 1em;
+}

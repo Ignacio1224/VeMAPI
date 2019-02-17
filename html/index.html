@@ -96,6 +96,19 @@
             </ons-toolbar>
             <div>
                 <!-- Colocar TabPane -->
+                <ons-button id="Bttn-M-T-New" class="M-tab M-tab-active" onclick="MantainmentTabs('N');">Nuevo</ons-button>
+                <ons-button id="Bttn-M-T-View" class="M-tab" onclick="MantainmentTabs('V');">Listado</ons-button>
+
+                <div id="M-New">
+                    <h1>NUEVO</h1>
+                </div>
+                <div id="M-View">
+                    <h2>Listado</h2>
+                    <ons-select id="M-cmbCars" onchange="LoadManteinments()">
+                        <option value="">Auto</option>
+                        <option value="underbar">Underbar</option>
+                    </ons-select>
+                </div>
             </div>
         </ons-page>
     </template>
