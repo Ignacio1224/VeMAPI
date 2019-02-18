@@ -82,9 +82,13 @@ function MantainmentTabs(t) {
     if (t === 'N') {
         $('#Bttn-M-T-View').removeClass('M-tab-active');
         $('#Bttn-M-T-New').addClass('M-tab-active');
+        $('#Bttn-M-T-New').prop("disabled", true);
+        $('#Bttn-M-T-View').prop("disabled", false);
     } else if (t === 'V') {
         $('#Bttn-M-T-New').removeClass('M-tab-active');
         $('#Bttn-M-T-View').addClass('M-tab-active');
+        $('#Bttn-M-T-New').prop("disabled", false);
+        $('#Bttn-M-T-View').prop("disabled", true);
     }
 }
 
@@ -140,4 +144,12 @@ function ShowModal(value) {
     setTimeout(function () {
         modal.hide();
     }, 2400);
+}
+
+// Google Maps API
+function initMap() {
+    map = new google.maps.Map(document.getElementById('googleMap'), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 8
+    });
 }

@@ -18,6 +18,8 @@
     <script src="../frameworks/jquery-3.3.1/jquery.js"></script>
     <!-- ONSEN-UI -->
     <script src="../frameworks/onsen-ui/js/onsenui.min.js"></script>
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8"></script>
     <!-- Nano's -->
     <script src="../js/ui.js"></script>
     <script src="../js/vehicle.js"></script>
@@ -95,18 +97,48 @@
                 </div>
             </ons-toolbar>
             <div>
-                <!-- Colocar TabPane -->
-                <ons-button id="Bttn-M-T-New" class="M-tab M-tab-active" onclick="MantainmentTabs('N');">Nuevo</ons-button>
+                <!-- TabPane -->
+                <ons-button id="Bttn-M-T-New" class="M-tab M-tab-active" onclick="MantainmentTabs('N');" disabled>Nuevo</ons-button>
                 <ons-button id="Bttn-M-T-View" class="M-tab" onclick="MantainmentTabs('V');">Listado</ons-button>
 
                 <div id="M-New">
-                    <h1>NUEVO</h1>
+                    <h2>Nuevo</h2>
+                    <div>
+                        <ons-select id="N-cmbCars">
+                            <option value="">Auto</option>
+                        </ons-select>
+                        <ons-select id="N-cmbWorkshopsFav">
+                            <option value="">Taller Favorito</option>
+                        </ons-select>
+                        <ons-select id="N-cmbServices" disabled>
+                            <option value="">Servicio</option>
+                        </ons-select>
+                    </div>
+
+                    <div>
+                        <ons-input id="N-txtDate" modifier="underbar" type="date" float disabled></ons-input>
+                    </div>
+                    <div>
+                        <textarea id="N-txtDescription" rows="4" class="textarea" placeholder="Descripción" disabled></textarea>
+                    </div>
+                    <div>
+                        <ons-input id="N-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje"
+                            float disabled></ons-input>
+                    </div>
+                    <div>
+                        <ons-input id="N-txtPrice" modifier="underbar" type="number" placeholder="Precio" float
+                            disabled></ons-input>
+                    </div>
+
+                    <div id="N-DAdd">
+                        <ons-button id="N-BttnAdd" disabled>Agregar</ons-button>
+                    </div>
+
                 </div>
                 <div id="M-View">
                     <h2>Listado</h2>
                     <ons-select id="M-cmbCars" onchange="LoadManteinments()">
                         <option value="">Auto</option>
-                        <option value="underbar">Underbar</option>
                     </ons-select>
                 </div>
             </div>
@@ -128,6 +160,41 @@
                     <ons-toolbar-button class="bttnMenu" onclick="EndSession();">Terminar sesión</ons-toolbar-button>
                 </div>
             </ons-toolbar>
+
+            <div id="W-DS">
+                <ons-search-input placeholder="Buscar Taller Por Servicio" onkeydown="initMap();"></ons-search-input>
+            </div>
+
+            <div id="googleMap"></div>
+
+            <ons-card>
+                <div class="title">
+                    Taller
+                </div>
+                <img src="../img/addImage.png" alt="Add Image" style="width: 100%">
+                <div class="content">
+                    <ons-list>
+                        <ons-list-item>
+                            <p>Direccion: </p>
+                        </ons-list-item>
+                        <ons-list-item>
+                            <p>Teléfono: </p>
+                        </ons-list-item>
+                        <ons-list-item>
+                            <p>Descripción: </p>
+                        </ons-list-item>
+                        <ons-list-item>
+                            <label for="W-favourite">Marcar como favorito</label>
+                            <input type="checkbox" id="W-favourite" class="star" />
+                        </ons-list-item>
+
+                    </ons-list>
+                    <p style="text-align: center; margin-top: 30px;">
+                        <ons-button onclick="RegisterVehicle();">Registrar</ons-button>
+                    </p>
+                </div>
+            </ons-card>
+
         </ons-page>
     </template>
 
