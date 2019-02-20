@@ -11,13 +11,14 @@ img {
     height: 14em;
 }
 
+.center {
+    text-align: center;
+}
+
 .M-tab {
     width: 49% !important;
     margin-top: 0.4em !important;
     background-color: #bcc4d1 !important;
-}
-.M-tab:first-of-type {
-    margin-left: 0.1em;
 }
 
 .M-tab-active {
@@ -72,23 +73,34 @@ img {
     margin: 2em 0 2em 0;
 }
 
-.star {
-    visibility: hidden !important;
-    font-size: 30px !important;
-    cursor: pointer !important;
-}
-
-.star:before {
-    content: "\2606" !important;
-    position: absolute !important;
-    visibility: visible !important;
-}
-
-.star:checked:before {
-    content: "\2605" !important;
-    position: absolute !important;
+#W-favourite {
+    margin-left: 1em;
 }
 
 #googleMap {
     height: 240px;
+}
+
+#bttnSearchWorkshop,
+#txtSearchWorkshop {
+    vertical-align: middle;
+}
+
+.three-tab {
+    font-size: 10px !important;
+    width: calc(calc(100% / 3) - 9px) !important;
+    margin-top: 0.4em !important;
+    background-color: #bcc4d1 !important;
+}
+
+.three-tab-active {
+    background-color: #368ebd !important;
+}
+
+#W-C-Description {
+    display: none;
+}
+
+#W-C-Agenda {
+    display: none;
 }

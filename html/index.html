@@ -32,6 +32,7 @@
 <body>
     <ons-page id="LogIn">
         <div style="text-align: center; margin-top: 30px;">
+            <h2>Log In</h2>
             <p>
                 <ons-input id="L-email" modifier="underbar" type="email" placeholder="Email" float></ons-input>
             </p>
@@ -47,6 +48,7 @@
 
     <ons-page id="SignIn">
         <div style="text-align: center; margin-top: 30px;">
+            <h2>Sign In</h2>
             <p>
                 <ons-input id="S-email" modifier="underbar" type="email" placeholder="Email" float></ons-input>
             </p>
@@ -99,8 +101,10 @@
             </ons-toolbar>
             <div>
                 <!-- TabPane -->
-                <ons-button id="Bttn-M-T-New" class="M-tab M-tab-active" onclick="MantainmentTabs('N');" disabled>Nuevo</ons-button>
-                <ons-button id="Bttn-M-T-View" class="M-tab" onclick="MantainmentTabs('V');">Listado</ons-button>
+                <div class="center">
+                    <ons-button id="Bttn-M-T-New" class="M-tab M-tab-active" onclick="MantainmentTabs('N');" disabled>Nuevo</ons-button>
+                    <ons-button id="Bttn-M-T-View" class="M-tab" onclick="MantainmentTabs('V');">Listado</ons-button>
+                </div>
 
                 <div id="M-New">
                     <h2>Nuevo</h2>
@@ -163,39 +167,51 @@
             </ons-toolbar>
 
             <div id="W-DS">
-                <ons-search-input placeholder="Buscar Taller Por Servicio" onkeydown="initMap();"></ons-search-input>
+                <ons-search-input id='txtSearchWorkshop' placeholder="Buscar Taller Por Servicio"></ons-search-input>
+                <ons-button onclick="FillMap();" id="bttnSearchWorkshop">Buscar</ons-button>                
             </div>
 
             <div id="googleMap"></div>
 
-            <ons-card>
-                <div class="title">
-                    Taller
-                </div>
-                <img src="../img/addImage.png" alt="Add Image" style="width: 100%">
-                <div class="content">
-                    <ons-list>
-                        <ons-list-item>
-                            <p>Direccion: </p>
-                        </ons-list-item>
-                        <ons-list-item>
-                            <p>Teléfono: </p>
-                        </ons-list-item>
-                        <ons-list-item>
-                            <p>Descripción: </p>
-                        </ons-list-item>
-                        <ons-list-item>
-                            <label for="W-favourite">Marcar como favorito</label>
-                            <input type="checkbox" id="W-favourite" class="star" />
-                        </ons-list-item>
-
-                    </ons-list>
-                    <p style="text-align: center; margin-top: 30px;">
-                        <ons-button onclick="RegisterVehicle();">Registrar</ons-button>
-                    </p>
-                </div>
-            </ons-card>
-
+            <div class="center">
+                <ons-button id="Bttn-W-T-Description" onclick="WorkshopTabs('D')" class="three-tab three-tab-active" disabled>Informaci&oacute;n</ons-button>
+                <ons-button id="Bttn-W-T-Agenda" onclick="WorkshopTabs('A')" class="three-tab">Agendarme</ons-button>
+                <ons-button id="Bttn-W-T-Route" onclick="WorkshopTabs('R')" class="three-tab">Marcar Ruta</ons-button>
+            </div>
+            <div id="W-C-Description">
+                <ons-card>
+                    <div class="title">
+                        Taller
+                    </div>
+                    <img src="../img/addImage.png" alt="Add Image" style="width: 100%">
+                    <div class="content">
+                        <ons-list>
+                            <ons-list-item>
+                                <p>Direccion: </p>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <p>Teléfono: </p>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <p>Descripción: </p>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <label for="W-favourite">Marcar como favorito</label>
+                                <ons-checkbox id="W-favourite"></ons-checkbox>
+                            </ons-list-item>
+    
+                        </ons-list>
+                        <!-- <p style="text-align: center; margin-top: 30px;">
+                            <ons-button onclick="RegisterVehicle();">Registrar</ons-button>
+                        </p> -->
+                    </div>
+                </ons-card>
+            </div>
+            <div id="W-C-Agenda">
+                <ons-card>
+                    <h2>AGENDA</h2>
+                </ons-card>
+            </div>
         </ons-page>
     </template>
 
