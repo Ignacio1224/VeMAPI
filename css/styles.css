@@ -81,6 +81,10 @@ img {
     height: 240px;
 }
 
+#W-TabPane {
+    display: none;
+}
+
 #bttnSearchWorkshop,
 #txtSearchWorkshop {
     vertical-align: middle;
