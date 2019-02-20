@@ -39,7 +39,7 @@
                 <ons-input id="L-password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
             </p>
             <p style="margin-top: 30px;">
-                <ons-button onclick="LogIn();">Log in</ons-button>
+                <ons-button onclick="LogIn(true);">Log in</ons-button>
                 <ons-button modifier="quiet" onclick="SignIn();">Sign in</ons-button>
             </p>
         </div>
@@ -54,10 +54,11 @@
                 <ons-input id="S-password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
             </p>
             <p>
-                <ons-input id="S-phone" modifier="underbar" type="text" placeholder="Tel&eacute;fono" float></ons-input>
+                <ons-input id="S-phone" modifier="underbar" type="number" placeholder="Tel&eacute;fono" float></ons-input>
             </p>
             <p style="margin-top: 30px;">
-                <ons-button modifier="quiet" onclick="SignIn(true);">Sign in</ons-button>
+                <ons-button onclick="SignIn(true);">Sign in</ons-button>
+                <ons-button onclick="LogIn();" modifier="quiet">Log in</ons-button>
             </p>
         </div>
     </ons-page>

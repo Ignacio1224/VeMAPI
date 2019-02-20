@@ -27,15 +27,19 @@ ons.ready(() => {
 });
 
 
-function LogIn() {
-    let email = $('#L-email').val();
-    let password = $('#L-password').val();
-
-    if (email === 'bob' && password === 'secret') {
-        ClearInputs('LogIn');
-        ToggleWindows(LV);
+function LogIn(v = false) {
+    if (!v) {
+        ToggleWindows(LS);
     } else {
-        ShowModal('Usuario o clave incorrecto');
+        let email = $('#L-email').val();
+        let password = $('#L-password').val();
+    
+        if (email === 'bob' && password === 'secret') {
+            ClearInputs('LogIn');
+            ToggleWindows(LV);
+        } else {
+            ShowModal('Usuario o clave incorrecto');
+        }
     }
 };
 
@@ -143,7 +147,7 @@ function ShowModal(value) {
     modal.show();
     setTimeout(function () {
         modal.hide();
-    }, 2400);
+    }, 1800);
 }
 
 // Google Maps API
