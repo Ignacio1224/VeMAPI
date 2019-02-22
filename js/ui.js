@@ -1,5 +1,6 @@
 const LV = ['LogIn', 'VeMAPI'];
 const LS = ['LogIn', 'SignIn'];
+const SV = ['SignIn', 'VeMAPI']
 const MT = ['M-New', 'M-View'];
 const WT = ['W-C-Description', 'W-C-Agenda'];
 

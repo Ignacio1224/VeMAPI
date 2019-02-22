@@ -107,19 +107,49 @@ function LoadManteinments() {
 }
 
 
-function LogIn(v = false) {
+function LogIn(v = false, usu = null) {
     if (!v) {
+
         ClearInputs('SignIn');
         ToggleWindows(LS);
-    } else {
-        let email = $('#L-email').val();
-        let password = $('#L-password').val();
 
-        if (email === 'bob' && password === 'secret') {
+    } else {
+
+        let email = (usu) ? usu.GetEmail() : $('#L-email').val();
+        let password = (usu) ? usu.GetPassword() : $('#L-password').val();
+
+        if (email !== '' && password !== '' && ValidateEmail(email)) {
+
             ClearInputs('LogIn');
-            ToggleWindows(LV);
+            user = new User(email, null, password);
+
+            $.ajax({
+                type: "POST",
+
+                url: "http://api.marcelocaiafa.com/login",
+
+                data: JSON.stringify(user.GenerateLogInJSON()),
+
+                dataType: "JSON",
+
+                success: function (response) {
+                    user = new User(response.description.usuario.email, response.description.usuario.telefono, null, response.token);
+                    if (usu) {
+                        ToggleWindows(SV);
+                    } else {
+                        ToggleWindows(LV);
+                    }
+                },
+
+                error: function (err) {
+                    ShowModal(err.responseJSON.descripcion);
+                }
+            });
+
         } else {
+
             ShowModal('Usuario o clave incorrecto');
+
         }
     }
 };
@@ -144,35 +174,49 @@ function SearchWrk(id) {
 
 
 function SignIn(v = false) {
+    
     if (!v) {
+    
         ClearInputs('LogIn');
         ToggleWindows(LS);
+    
     } else {
+        
         const sEmail = $('#S-email').val();
         const sPassword = $('#S-password').val();
         const sPhone = $('#S-phone').val();
 
         if (sEmail == '' || sPassword == '' || sPhone == '') {
+        
             ShowModal('Los campos no pueden estar vacíos');
+        
         } else {
             if (! ValidateEmail(sEmail)) {
+
                 ShowModal('El email no es válido');
+            
             } else {
-                ClearInputs('SignIn');
+
                 user = new User(sEmail, sPhone, sPassword);
                 
                 $.ajax({
                     type: "POST",
+
                     url: "http://api.marcelocaiafa.com/usuario",
-                    data: user.GenerateJSON(),
+
+                    data: JSON.stringify(user.GenerateSignInJSON()),
+
                     dataType: "JSON",
+
                     success: function (response) {
-                        user = new User(response.description.usuario.email, response.description.usuario.telefono, null, response.token);
-                        LogIn(true);
+                        
+                        ClearInputs('SignIn');
+                        user = new User(response.description.usuario.email, response.description.usuario.telefono, sPassword, response.token);
+                        LogIn(true, user);
                     },
+
                     error: function (err) {
-                        console.log(err);
-                        ShowModal(err);
+                        ShowModal(err.responseJSON.descripcion);
                     }
                 });
             }

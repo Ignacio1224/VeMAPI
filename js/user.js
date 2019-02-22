@@ -37,6 +37,16 @@ class User {
     };
 
     /**
+     * Get Password
+     * Public
+     * @returns {String}
+     */
+    GetPassword () {
+        return this.password;
+    };
+
+
+    /**
      * Get Token
      * Public
      * @returns {String}
@@ -47,14 +57,27 @@ class User {
 
 
     /**
+     * Generate LogIn JSON
+     * @returns {JSON}
+     */
+    GenerateLogInJSON () {
+        const user = {
+            email : this.email,
+            password : this.password
+        };
+        return user;
+    }
+
+
+    /**
      * Generate JSON
      * Public
      * @returns {JSON}
      */ 
-    GenerateJSON () {
+    GenerateSignInJSON () {
         const user = {
             email : this.email,
-            telefono : this.phone,
+            telefono : String(this.phone),
             password : this.password
         };
         return user;
