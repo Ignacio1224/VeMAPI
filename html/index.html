@@ -21,10 +21,11 @@
     <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8"></script>
     <!-- Nano's -->
-    <script src="../js/ui.js"></script>
     <script src="../js/vehicle.js"></script>
     <script src="../js/user.js"></script>
     <script src="../js/workshop.js"></script>
+    <script src="../js/utilities.js"></script>
+    <script src="../js/ui.js"></script>
 
     <title>VeMAPI</title>
 </head>
@@ -178,35 +179,7 @@
                 <ons-button id="Bttn-W-T-Agenda" onclick="WorkshopTabs('A')" class="three-tab">Agendarme</ons-button>
                 <ons-button id="Bttn-W-T-Route" onclick="WorkshopTabs('R')" class="three-tab">Marcar Ruta</ons-button>
             </div>
-            <div id="W-C-Description">
-                <ons-card>
-                    <div class="title">
-                        Taller
-                    </div>
-                    <img src="../img/addImage.png" alt="Add Image" style="width: 100%">
-                    <div class="content">
-                        <ons-list>
-                            <ons-list-item>
-                                <p>Direccion: </p>
-                            </ons-list-item>
-                            <ons-list-item>
-                                <p>Teléfono: </p>
-                            </ons-list-item>
-                            <ons-list-item>
-                                <p>Descripción: </p>
-                            </ons-list-item>
-                            <ons-list-item>
-                                <label for="W-favourite">Marcar como favorito</label>
-                                <ons-checkbox id="W-favourite"></ons-checkbox>
-                            </ons-list-item>
-    
-                        </ons-list>
-                        <!-- <p style="text-align: center; margin-top: 30px;">
-                            <ons-button onclick="RegisterVehicle();">Registrar</ons-button>
-                        </p> -->
-                    </div>
-                </ons-card>
-            </div>
+            <div id="W-C-Description"></div>
             <div id="W-C-Agenda">
                 <ons-card>
                     <h2>AGENDA</h2>

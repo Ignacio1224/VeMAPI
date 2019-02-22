@@ -34,103 +34,93 @@ ons.ready(() => {
 
 });
 
-let user;
 
+function DisplayWCard() {
+    workshop = SearchWrk($(this)[0].title);
 
-function LogIn(v = false) {
-    if (!v) {
-        ClearInputs('SignIn');
-        ToggleWindows(LS);
-    } else {
-        let email = $('#L-email').val();
-        let password = $('#L-password').val();
-
-        if (email === 'bob' && password === 'secret') {
-            ClearInputs('LogIn');
-            ToggleWindows(LV);
-        } else {
-            ShowModal('Usuario o clave incorrecto');
-        }
-    }
-};
-
-function SignIn(v = false) {
-    if (!v) {
-        ClearInputs('LogIn');
-        ToggleWindows(LS);
-    } else {
-        const sEmail = $('#S-email').val();
-        const sPassword = $('#S-password').val();
-        const sPhone = $('#S-phone').val();
-
-        if (sEmail == '' || sPassword == '' || sPhone == '') {
-            ShowModal('Los campos no pueden estar vacíos');
-        } else {
-            if (! ValidateEmail(sEmail)) {
-                ShowModal('El email no es válido');
-            } else {
-                ClearInputs('SignIn');
-                user = new User(sEmail, sPhone, sPassword);
-                
-                $.ajax({
-                    type: "POST",
-                    url: "http://api.marcelocaiafa.com/usuario",
-                    data: user.GenerateJSON(),
-                    dataType: "JSON",
-                    success: function (response) {
-                        user = new User(response.description.usuario.email, response.description.usuario.telefono, null, response.token);
-                        LogIn(true);
-                    },
-                    error: function (err) {
-                        ShowModal(err);
-                    }
-                });
-            }
-        }
-    }
+    $('#W-C-Description').html(`
+    <ons-card>
+        <div class="title">
+            ${workshop.GetDescription()}
+        </div>
+        <img src="http://images.marcelocaiafa.com/${workshop.GetImg()}" alt="Add Image" style="width: 100%">
+        <div class="content">
+            <ons-list>
+                <ons-list-item>
+                    <p style="text-align: left;">Direccion: ${workshop.GetAddress()}</p>
+                </ons-list-item>
+                <ons-list-item>
+                    <p>Teléfono: ${workshop.GetPhone()}</p>
+                </ons-list-item>
+                <ons-list-item>
+                    <label for="W-favourite">Marcar como favorito</label>
+                    <ons-checkbox id="W-favourite"></ons-checkbox>
+                </ons-list-item>
+            </ons-list>
+        </div>
+    </ons-card>
+    `);
+    $('#W-C-Description').show();
 }
 
-function RegisterVehicle() {
-    console.log('Add Vehicle');
-}
 
-/**
- * End User Session
- */
-function EndSession() {
-    console.log('End Session');
-    ToggleWindows(LV);
-}
+function FillManteinments(m) {
+    $('#M-View ons-list-item').remove();
 
-/**
- * Utils
- */
-function ToggleWindows(ws) {
-    for (w of ws) {
-        const r = Math.floor(Math.random() * 101);
-        if (r % 2 === 0) {
-            $(`#${w}`).slideToggle('slow');
-        } else if (r % 3 == 0) {
-            $(`#${w}`).toggle('slow');
-        } else if (r % 5 == 0) {
-            $(`#${w}`).toggle();
-        } else {
-            $(`#${w}`).slideToggle();
-        }
-    }
-}
-
-function IntroAction(el, fn, fnArgs = null) {
-    $(`#${el}`).keyup(function (event) {
-        if (event.keyCode === 13) {
-            if (fnArgs) {
-                fn(fnArgs);
-            } else {
-                fn();
-            }
-        }
+    m.forEach(x => {
+        $('#M-View').append(`
+            <ons-list-item expandable>
+                Mantenimientos
+                <div class="expandable-content">
+                    <ons-card>
+                        <div class="title">
+                            Detalles
+                        </div>
+                        <div class="content">
+                            <ons-list>
+                                <ons-list-item>Fecha - ${x.fecha}</ons-list-item>
+                                <ons-list-item>Taller - ${x.taller}</ons-list-item>
+                                <ons-list-item>Servicio - ${x.servicio}</ons-list-item>
+                                <ons-list-item>Descripción - ${x.descripcion}</ons-list-item>
+                                <ons-list-item>Precio - ${x.precio}</ons-list-item>
+                            </ons-list>
+                        </div>
+                    </ons-card>
+                </div>
+            </ons-list-item>
+        `);
     });
 }
+
+
+function FillMap() {
+    const serv = $('#txtSearchWorkshop').val();
+    if (serv == "") {
+        return ShowModal("El servicio no puede estar vacío");
+    }
+    const url = `http://api.marcelocaiafa.com/taller?servicio=${serv}`;
+
+    $.ajax(
+        {
+            url,
+            headers: { Authorization: usu.GetToken() },
+            dataType: 'JSON',
+            method: 'GET',
+            success: (request) => {
+                workshops = [];
+                request.description.forEach((w) => {
+                    const wrk = new Workshop(serv, w.direccion, w.telefono, w.descripcion, w.imagen, w.id, w.lat, w.lng);
+                    workshops.push(wrk);
+                });
+                InitMap(workshops);
+            },
+            error: (err) => {
+                ShowModal(err);
+            }
+        }
+    );
+}
+
 
 function MantainmentTabs(t) {
     ToggleWindows(MT);
@@ -147,11 +137,43 @@ function MantainmentTabs(t) {
     }
 }
 
+
+function ShowModal(value) {
+    let modal = $('ons-modal');
+
+    $('#modalSpan').html(value);
+
+    modal.show('fold');
+    setTimeout(function () {
+        modal.hide('fold');
+    }, 2000);
+}
+
+
+function ToggleWindows(ws) {
+    for (w of ws) {
+        const r = Math.floor(Math.random() * 101);
+        if (r % 2 === 0) {
+            $(`#${w}`).slideToggle('slow');
+        } else if (r % 3 == 0) {
+            $(`#${w}`).toggle('slow');
+        } else if (r % 5 == 0) {
+            $(`#${w}`).toggle();
+        } else {
+            $(`#${w}`).slideToggle();
+        }
+    }
+}
+
+
 function WorkshopTabs(t) {
     if (t !== 'R') {
         ToggleWindows(WT);
     } else {
         console.log('Marcar Ruta');
+        showDirections = true;
+        InitMap(workshops);
+        showDirections = false;
 
     }
     switch (t) {
@@ -182,95 +204,4 @@ function WorkshopTabs(t) {
         default:
             break;
     }
-}
-
-function LoadManteinments() {
-    const car = $('#M-cmbCars').val();
-
-    // Get All Mantainmentos of selected car
-    FillManteinments([{
-        fecha: '12/12/12',
-        taller: "doctorcar",
-        servicio: 'cambio de aros',
-        descripcion: 'aaa',
-        precio: 135
-    }, {
-        fecha: '12/12/12',
-        taller: "doctorcar",
-        servicio: 'cambio de aros',
-        descripcion: 'aaa',
-        precio: 135
-    }])
-}
-
-function FillManteinments(m) {
-    $('#M-View ons-list-item').remove();
-
-    m.forEach(x => {
-        $('#M-View').append(`
-            <ons-list-item expandable>
-                Mantenimientos
-                <div class="expandable-content">
-                    <ons-card>
-                        <div class="title">
-                            Detalles
-                        </div>
-                        <div class="content">
-                            <ons-list>
-                                <ons-list-item>Fecha - ${x.fecha}</ons-list-item>
-                                <ons-list-item>Taller - ${x.taller}</ons-list-item>
-                                <ons-list-item>Servicio - ${x.servicio}</ons-list-item>
-                                <ons-list-item>Descripción - ${x.descripcion}</ons-list-item>
-                                <ons-list-item>Precio - ${x.precio}</ons-list-item>
-                            </ons-list>
-                        </div>
-                    </ons-card>
-                </div>
-            </ons-list-item>
-        `);
-    });
-}
-
-function ClearInputs(place) {
-    const inputs = $(`#${place} :input`);
-
-    for (i of inputs) {
-        $(i).val('');
-    }
-}
-
-function ShowModal(value) {
-    let modal = $('ons-modal');
-
-    $('#modalSpan').html(value);
-
-    modal.show('fold');
-    setTimeout(function () {
-        modal.hide('fold');
-    }, 2000);
-}
-
-function ValidateEmail(mail) {
-    let valid = false;
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
-        valid = true;
-    }
-    return (valid);
-}
-
-
-function FillMap() {
-    const search = $('#txtSearchWorkshop').val();
-
-    console.log("Call ajax");
-}
-// Google Maps API
-function initMap() {
-    map = new google.maps.Map(document.getElementById('googleMap'), {
-        center: {
-            lat: -34.397,
-            lng: 150.644
-        },
-        zoom: 8
-    });
 }
