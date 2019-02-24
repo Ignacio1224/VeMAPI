@@ -31,12 +31,12 @@ ons.ready(() => {
     IntroAction('S-email', LogIn, true);
     IntroAction('S-password', LogIn, true);
     IntroAction('S-phone', LogIn, true);
-    // IntroAction('txtSearchWorkshop', FillMap);
 
 });
 
 
 function DisplayWCard() {
+    $('#W-TabPane').show();
     workshop = SearchWrk($(this)[0].title);
 
     $('#W-C-Description').html(`
@@ -55,12 +55,17 @@ function DisplayWCard() {
                 </ons-list-item>
                 <ons-list-item>
                     <label for="W-favourite">Marcar como favorito</label>
-                    <ons-checkbox id="W-favourite"></ons-checkbox>
+                    <ons-checkbox input-id="W-favourite" onclick="AddFavouriteWorkshop(${workshop.GetId()})"></ons-checkbox>
                 </ons-list-item>
             </ons-list>
         </div>
     </ons-card>
     `);
+// REVISARRRR
+    if (SearchFavouriteWorkshop(workshop.GetId())) {
+        $('#W-favourite').prop("checked", true);
+    }
+
     $('#W-C-Description').show();
 }
 
@@ -91,35 +96,6 @@ function FillManteinments(m) {
             </ons-list-item>
         `);
     });
-}
-
-
-function FillMap() {
-    const serv = $('#txtSearchWorkshop').val();
-    if (serv == "") {
-        return ShowModal("El servicio no puede estar vacío");
-    }
-    const url = `http://api.marcelocaiafa.com/taller?servicio=${serv}`;
-
-    $.ajax(
-        {
-            url,
-            headers: { Authorization: usu.GetToken() },
-            dataType: 'JSON',
-            method: 'GET',
-            success: (request) => {
-                workshops = [];
-                request.description.forEach((w) => {
-                    const wrk = new Workshop(serv, w.direccion, w.telefono, w.descripcion, w.imagen, w.id, w.lat, w.lng);
-                    workshops.push(wrk);
-                });
-                InitMap(workshops);
-            },
-            error: (err) => {
-                ShowModal(err);
-            }
-        }
-    );
 }
 
 
@@ -171,7 +147,6 @@ function WorkshopTabs(t) {
     if (t !== 'R') {
         ToggleWindows(WT);
     } else {
-        console.log('Marcar Ruta');
         showDirections = true;
         InitMap(workshops);
         showDirections = false;
