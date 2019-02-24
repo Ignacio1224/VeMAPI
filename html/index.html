@@ -12,7 +12,7 @@
     <!-- ONSEN-UI -->
     <link rel="stylesheet" href="../frameworks/onsen-ui/css/onsenui.min.css">
     <link rel="stylesheet" href="../frameworks/onsen-ui/css/onsen-css-components.min.css">
-
+    
     <!-- JS -->
     <!-- JQuery -->
     <script src="../frameworks/jquery-3.3.1/jquery.js"></script>
@@ -21,16 +21,18 @@
     <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8"></script>
     <!-- Nano's -->
+    <script src="../img/addImage.js"></script>
     <script src="../js/vehicle.js"></script>
     <script src="../js/user.js"></script>
     <script src="../js/workshop.js"></script>
+    <script src="../js/service.js"></script>
     <script src="../js/utilities.js"></script>
     <script src="../js/ui.js"></script>
 
     <title>VeMAPI</title>
 </head>
 
-<body>
+<body>    
     <ons-page id="LogIn">
         <div style="text-align: center; margin-top: 30px;">
             <h2>Log In</h2>
@@ -110,14 +112,14 @@
                 <div id="M-New">
                     <h2>Nuevo</h2>
                     <div>
-                        <ons-select id="N-cmbCars">
+                        <ons-select id="N-cmbvehicles">
                             <option value="">Auto</option>
                         </ons-select>
-                        <ons-select id="N-cmbWorkshopsFav">
-                            <option value="">Taller Favorito</option>
-                        </ons-select>
-                        <ons-select id="N-cmbServices" disabled>
+                        <ons-select select-id="N-cmbServices">
                             <option value="">Servicio</option>
+                        </ons-select>
+                        <ons-select id="N-cmbWorkshopsFav" disabled>
+                            <option value="">Taller Favorito</option>
                         </ons-select>
                     </div>
 
@@ -137,13 +139,13 @@
                     </div>
 
                     <div id="N-DAdd">
-                        <ons-button id="N-BttnAdd" disabled>Agregar</ons-button>
+                        <ons-button id="N-BttnAdd" disabled onclick="Manteinment();">Agregar</ons-button>
                     </div>
 
                 </div>
                 <div id="M-View">
                     <h2>Listado</h2>
-                    <ons-select id="M-cmbCars" onchange="LoadManteinments()">
+                    <ons-select id="M-cmbvehicles" onchange="LoadManteinments()">
                         <option value="">Auto</option>
                     </ons-select>
                 </div>
@@ -169,21 +171,49 @@
 
             <div id="W-DS">
                 <ons-search-input id='txtSearchWorkshop' placeholder="Buscar Taller Por Servicio"></ons-search-input>
-                <ons-button onclick="FillMap();" id="bttnSearchWorkshop">Buscar</ons-button>                
+                <ons-button onclick="FillMap();" id="bttnSearchWorkshop">Buscar</ons-button>
             </div>
 
             <div id="googleMap"></div>
 
             <div class="center" id="W-TabPane">
-                <ons-button id="Bttn-W-T-Description" onclick="WorkshopTabs('D')" class="three-tab three-tab-active" disabled>Informaci&oacute;n</ons-button>
+                <ons-button id="Bttn-W-T-Description" onclick="WorkshopTabs('D')" class="three-tab three-tab-active"
+                    disabled>Informaci&oacute;n</ons-button>
                 <ons-button id="Bttn-W-T-Agenda" onclick="WorkshopTabs('A')" class="three-tab">Agendarme</ons-button>
                 <ons-button id="Bttn-W-T-Route" onclick="WorkshopTabs('R')" class="three-tab">Marcar Ruta</ons-button>
             </div>
             <div id="W-C-Description"></div>
             <div id="W-C-Agenda">
                 <ons-card>
-                    <h2>Agendarme</h2>
-                    
+                    <div class="title">
+                        Agendarme
+                    </div>
+                    <div class="content">
+                        <ons-list>
+                            <ons-list-item>
+                                <ons-select id="A-cmbvehicles">
+                                    <option value="">Auto</option>
+                                </ons-select>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <ons-input id="A-txtDate" modifier="underbar" type="date" float disabled></ons-input>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <textarea id="A-txtDescription" rows="4" class="textarea" placeholder="Descripción"
+                                    disabled></textarea>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <ons-input id="A-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje"
+                                    float disabled></ons-input>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <ons-input id="A-txtPrice" modifier="underbar" type="number" placeholder="Precio" float disabled></ons-input>
+                            </ons-list-item>
+                        </ons-list>
+                        <p style="text-align: center; margin-top: 30px;">
+                            <ons-button onclick="Agenda();" disabled>Agendarme</ons-button>
+                        </p>
+                    </div>
                 </ons-card>
             </div>
         </ons-page>
@@ -209,16 +239,16 @@
                 <div class="title">
                     Nuevo Vehículo
                 </div>
-                <img src="../img/addImage.png" alt="Add Image" style="width: 100%">
+                <img id="V-image" alt="Add Image" style="width: 100%">
                 <div class="content">
                     <div>
-                        <ons-button>
+                        <ons-button onclick="ChangeImage();">
                             <ons-icon icon="ion-image"></ons-icon>
                         </ons-button>
                     </div>
                     <ons-list id="listNewVehicle">
                         <ons-list-item>
-                            <ons-input id="V-car_registration" modifier="underbar" type="text" placeholder="Matrícula"
+                            <ons-input id="V-vehicle_registration" modifier="underbar" type="text" placeholder="Matrícula"
                                 float></ons-input>
                         </ons-list-item>
                         <ons-list-item>

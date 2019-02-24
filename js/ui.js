@@ -32,6 +32,8 @@ ons.ready(() => {
     IntroAction('S-password', LogIn, true);
     IntroAction('S-phone', LogIn, true);
 
+    // Load generic image in vehicle
+    $('#V-image').prop('src', `data:image/jpeg;base64,${addImage}`);
 });
 
 
@@ -61,7 +63,8 @@ function DisplayWCard() {
         </div>
     </ons-card>
     `);
-// REVISARRRR
+    
+    // REVISARRRR
     if (SearchFavouriteWorkshop(workshop.GetId())) {
         $('#W-favourite').prop("checked", true);
     }

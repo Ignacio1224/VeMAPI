@@ -4,6 +4,8 @@ let workshop;
 let workshops;
 let favouriteWorkshops;
 
+let services;
+
 let directionsDisplay;
 let directionsService;
 let showDirections;
@@ -38,6 +40,13 @@ function AddFavouriteWorkshop(wrk) {
 }
 
 
+function AddImage(vehicle, url) {
+    database.transaction((tx) => {
+        tx.executeSql('INSERT INTO VehicleImage VALUES (VehicleRegistration=?, Url=?)', [vehicle, url]);
+    });
+}
+
+
 function CalculateRoute(end) {
     var request = {
         origin: {
@@ -56,6 +65,19 @@ function CalculateRoute(end) {
 }
 
 
+function ChangeImage() {
+    navigator.camera.getPicture((img) => {
+        $('#V-image').prop('src', `data:image/jpeg;base64,${img}`);
+        const vehicleRegistration = $('#V-car_registration').val();
+        AddImage(vehicleRegistration, img);
+    }, (err) => {
+        ShowModal('No se pudo tomar la foto');
+    }, {
+        destinationType: Camera.DestinationType.DATA_URL
+    });
+}
+
+
 function ClearInputs(place) {
     const inputs = $(`#${place} :input`);
 
@@ -69,32 +91,9 @@ function FillMap() {
     $('#W-TabPane').hide();
     $('#W-C-Description').hide();
     $('#W-C-Agenda').hide();
-    
-    const serv = $('#txtSearchWorkshop').val();
-    if (serv == "") {
-        return ShowModal("El servicio no puede estar vacío");
-    }
-    const url = `http://api.marcelocaiafa.com/taller?servicio=${serv}`;
 
-    $.ajax({
-        url,
-        headers: {
-            Authorization: user.GetToken()
-        },
-        dataType: 'JSON',
-        method: 'GET',
-        success: (request) => {
-            workshops = [];
-            request.description.forEach((w) => {
-                const wrk = new Workshop(serv, w.direccion, w.telefono, w.descripcion, w.imagen, w.id, w.lat, w.lng);
-                workshops.push(wrk);
-            });
-            InitMap(workshops);
-        },
-        error: (err) => {
-            ShowModal(err);
-        }
-    });
+    const serv = $('#txtSearchWorkshop').val();
+    LoadWorkshops(serv, true);
 }
 
 
@@ -119,6 +118,7 @@ function InitDatabase() {
     database.transaction(
         (tx) => {
             tx.executeSql("CREATE TABLE IF NOT EXISTS FavouriteWorkshop (Email, Id)", []);
+            tx.executeSql("CREATE TABLE IF NOT EXISTS VehicleImage (VehicleRegistration, Url)", []);
         }
     );
 }
@@ -182,9 +182,9 @@ function LoadFavouriteWorkshops() {
 
 
 function LoadManteinments() {
-    const car = $('#M-cmbCars').val();
+    const vehicle = $('#M-cmbvehicles').val();
 
-    // Get All Mantainmentos of selected car
+    // Get All Mantainmentos of selected vehicle
     FillManteinments([{
         fecha: '12/12/12',
         taller: "doctorcar",
@@ -198,6 +198,62 @@ function LoadManteinments() {
         descripcion: 'aaa',
         precio: 135
     }])
+}
+
+
+function LoadServices (el) {
+    $.ajax({
+        url: 'http://api.marcelocaiafa.com/servicio',
+        headers: {
+            Authorization: user.GetToken()
+        },
+        dataType: 'JSON',
+        method: 'GET',
+        success: (request) => {
+            services = [];
+            request.description.forEach((s) => {
+                const serv = new Service(s.id, s.descripcion, s.nombre);
+                services.push(serv);
+            });
+            services.forEach((s) => {
+                $(`#${el}`).append(`<option value="${s.GetId()}">${s.GetName()}</option>`)
+            });
+        },
+        error: (err) => {
+            ShowModal(err);
+        }
+    });
+}
+
+
+function LoadWorkshops(serv, renderMap = false) {
+    if (serv == "") {
+        return ShowModal("El servicio no puede estar vacío");
+    }
+    const url = `http://api.marcelocaiafa.com/taller?servicio=${serv}`;
+    $.ajax({
+        url,
+        headers: {
+            Authorization: user.GetToken()
+        },
+        dataType: 'JSON',
+        method: 'GET',
+        success: (request) => {
+            workshops = [];
+            request.description.forEach((w) => {
+                const wrk = new Workshop(serv, w.direccion, w.telefono, w.descripcion, w.imagen, w.id, w.lat, w.lng);
+                workshops.push(wrk);
+            });
+
+            if (renderMap) {
+                InitMap(workshops);
+            } 
+            
+        },
+        error: (err) => {
+            ShowModal(err);
+        }
+    });
 }
 
 
@@ -232,6 +288,7 @@ function LogIn(v = false, usu = null) {
                     database = window.openDatabase('Favourites', '1.0', 'Database for favourite workshops', 1024 * 1024 * 4);
 
                     GetCurrentPosition();
+                    LoadServices('N-cmbServices');
                     InitDatabase();
                     LoadFavouriteWorkshops();
 
@@ -281,6 +338,11 @@ function LogOut() {
     });
 }
 
+
+
+function Manteinment() {
+
+}
 
 function RegisterVehicle() {
     console.log('Add Vehicle');
