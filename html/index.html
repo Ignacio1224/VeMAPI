@@ -112,34 +112,32 @@
                 <div id="M-New">
                     <h2>Nuevo</h2>
                     <div>
-                        <ons-select id="N-cmbvehicles">
+                        <ons-select select-id="N-cmbvehicles">
                             <option value="">Auto</option>
                         </ons-select>
-                        <ons-select select-id="N-cmbServices">
+                        <ons-select select-id="N-cmbServices" onchange="Manteinment('S');">
                             <option value="">Servicio</option>
                         </ons-select>
-                        <ons-select id="N-cmbWorkshopsFav" disabled>
+                        <ons-select select-id="N-cmbWorkshopsFav" onchange="Manteinment('W');" disabled>
                             <option value="">Taller Favorito</option>
                         </ons-select>
                     </div>
 
                     <div>
-                        <ons-input id="N-txtDate" modifier="underbar" type="date" float disabled></ons-input>
+                        <ons-input id="N-txtDate" modifier="underbar" type="date" float onchange="Manteinment('Da');" disabled></ons-input>
                     </div>
                     <div>
-                        <textarea id="N-txtDescription" rows="4" class="textarea" placeholder="Descripción" disabled></textarea>
+                        <textarea id="N-txtDescription" rows="4" class="textarea" placeholder="Descripción" onkeyup="Manteinment('De');" disabled></textarea>
                     </div>
                     <div>
-                        <ons-input id="N-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje"
-                            float disabled></ons-input>
+                        <ons-input id="N-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje" onkeyup="Manteinment('K');" float disabled></ons-input>
                     </div>
                     <div>
-                        <ons-input id="N-txtPrice" modifier="underbar" type="number" placeholder="Precio" float
-                            disabled></ons-input>
+                        <ons-input id="N-txtPrice" modifier="underbar" type="number" placeholder="Precio" onkeyup="Manteinment('P');" float disabled></ons-input>
                     </div>
 
                     <div id="N-DAdd">
-                        <ons-button id="N-BttnAdd" disabled onclick="Manteinment();">Agregar</ons-button>
+                        <ons-button id="N-BttnAdd" disabled onclick="Manteinment(true);">Agregar</ons-button>
                     </div>
 
                 </div>
@@ -173,8 +171,6 @@
                 <ons-select select-id="W-cmbServices" onchange="FillMap();">
                     <option value="">Servicio</option>
                 </ons-select>
-                <!-- <ons-search-input id='txtSearchWorkshop' placeholder="Buscar Taller Por Servicio"></ons-search-input>
-                <ons-button onclick="FillMap();" id="bttnSearchWorkshop">Buscar</ons-button> -->
             </div>
 
             <div id="googleMap"></div>

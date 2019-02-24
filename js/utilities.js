@@ -350,8 +350,74 @@ function LogOut() {
 }
 
 
-function Manteinment() {
+function Manteinment(val) {
+    switch (val) {
+        case 'S':
+            if ($('#N-cmbServices').val() !== '') {
+                const serv = $('#N-cmbServices').val();
+                LoadWorkshops(serv);
+                LoadFavouriteWorkshops();
+                setTimeout(() => {
+                    $('#N-cmbWorkshopsFav').html('<option value="">Taller Favorito</option>');
+                    workshops.forEach((w) => {
+                        for (let i = 0; i < favouriteWorkshops.length; i++) {
+                            if (w.GetId() == String(favouriteWorkshops[i].Id)) {
+                                $('#N-cmbWorkshopsFav').append(`<option value="${w.GetId()}">${w.GetDescription()}</option>`);
+                            }
 
+                        }
+                    });
+    
+                    $('#N-cmbWorkshopsFav').prop('disabled', false);
+                }, 1200);
+                
+            }
+            break;
+
+        case 'W':
+            if ($('#N-cmbWorkshopsFav').val() !== '') {
+                $('#N-txtDate').prop('disabled', false);
+            }
+            break;
+
+        case 'Da':
+            if ($('#N-txtDate').val() !== '') {
+                $('#N-txtDescription').prop('disabled', false);
+            }
+            break;
+
+        case 'De':
+            if ($('#N-txtDescription').val() !== '') {
+                $('#N-txtKilometers').prop('disabled', false);
+            }
+            break;
+
+        case 'K':
+            if ($('#N-txtKilometers').val() !== '') {
+                $('#N-txtPrice').prop('disabled', false);
+            }
+            break;
+
+        case 'P':
+            if ($('#N-txtPrice').val() !== '') {
+                $('#N-BttnAdd').prop('disabled', false);
+            }
+            break;
+
+        case true:
+            const vehicle = $('#N-cmbvehicles').val();
+            const service = $('#N-cmbServices').val();
+            const fworkshop = $('#N-cmbWorkshopsFav').val();
+            const date = $('#N-txtDate').val();
+            const description = $('#N-txtDescription').val();
+            const kilometers = $('#N-txtKilometers').val();
+            const price = $('#N-txtPrice').val();
+            console.log(vehicle, service, fworkshop, date, description, kilometers, price);
+
+            break;
+        default:
+            break;
+    }
 }
 
 function RegisterVehicle() {
@@ -359,7 +425,7 @@ function RegisterVehicle() {
     const description = $('#V-description').val();
 
     if (vehicleRegistration != '' && description != '') {
-    
+
         const vehicle = new Vehicle(vehicleRegistration, description, user.GetId());
         $.ajax({
             type: "POST",
