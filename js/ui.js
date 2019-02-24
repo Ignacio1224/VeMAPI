@@ -18,6 +18,26 @@ ons.ready(() => {
         var menu = document.getElementById('menu');
         content.load(page)
             .then(menu.close.bind(menu));
+        
+        if (page === 'mantainment.html') {
+            setTimeout(() => {
+                LoadServices('N-cmbServices');
+            }, 100);
+        }
+
+        if (page === 'workshops.html') {
+            setTimeout(() => {
+                LoadServices('W-cmbServices');
+            }, 100);
+        }
+        
+        if (page === 'vehicle.html') {
+            setTimeout(() => {
+                // Load generic image in vehicle
+                $('#V-image').prop('src', `data:image/jpeg;base64,${addImage}`);
+            }, 100);
+
+        }
     };
 
 
@@ -32,8 +52,6 @@ ons.ready(() => {
     IntroAction('S-password', LogIn, true);
     IntroAction('S-phone', LogIn, true);
 
-    // Load generic image in vehicle
-    $('#V-image').prop('src', `data:image/jpeg;base64,${addImage}`);
 });
 
 
@@ -56,7 +74,7 @@ function DisplayWCard() {
                     <p>Teléfono: ${workshop.GetPhone()}</p>
                 </ons-list-item>
                 <ons-list-item>
-                    <label for="W-favourite">Marcar como favorito</label>
+                    <label for="W-favourite" style="margin-right: 1em;">Marcar como favorito</label>
                     <ons-checkbox input-id="W-favourite" onclick="AddFavouriteWorkshop(${workshop.GetId()})"></ons-checkbox>
                 </ons-list-item>
             </ons-list>
@@ -65,10 +83,12 @@ function DisplayWCard() {
     `);
     
     // REVISARRRR
-    if (SearchFavouriteWorkshop(workshop.GetId())) {
-        $('#W-favourite').prop("checked", true);
-    }
-
+    setTimeout(() => {
+        if (SearchFavouriteWorkshop(workshop.GetId())) {
+            $('#W-favourite').prop("checked", true);
+        }
+    }, 100);
+    
     $('#W-C-Description').show();
 }
 
@@ -132,6 +152,16 @@ function ShowModal(value) {
 
 function ToggleWindows(ws) {
     for (w of ws) {
+        ClearInputs(w);
+
+        if (w == 'VeMAPI') {
+            $('#googleMap').hide();
+            $('#W-TabPane').hide();
+            $('#W-C-Description').hide();
+            $('#W-C-Agenda').hide();
+
+        }
+
         const r = Math.floor(Math.random() * 101);
         if (r % 2 === 0) {
             $(`#${w}`).slideToggle('slow');

@@ -170,8 +170,11 @@
             </ons-toolbar>
 
             <div id="W-DS">
-                <ons-search-input id='txtSearchWorkshop' placeholder="Buscar Taller Por Servicio"></ons-search-input>
-                <ons-button onclick="FillMap();" id="bttnSearchWorkshop">Buscar</ons-button>
+                <ons-select select-id="W-cmbServices" onchange="FillMap();">
+                    <option value="">Servicio</option>
+                </ons-select>
+                <!-- <ons-search-input id='txtSearchWorkshop' placeholder="Buscar Taller Por Servicio"></ons-search-input>
+                <ons-button onclick="FillMap();" id="bttnSearchWorkshop">Buscar</ons-button> -->
             </div>
 
             <div id="googleMap"></div>
@@ -239,7 +242,7 @@
                 <div class="title">
                     Nuevo Vehículo
                 </div>
-                <img id="V-image" alt="Add Image" style="width: 100%">
+                <img id="V-image" alt="Add Image" style="width: 100%" src="">
                 <div class="content">
                     <div>
                         <ons-button onclick="ChangeImage();">

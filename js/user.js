@@ -2,6 +2,7 @@ class User {
     
     /**
      * Constructor
+     * @param {String} id
      * @param {String} email 
      * @param {Number} phone 
      * @param {String} password 
@@ -9,7 +10,8 @@ class User {
      * @param {Vehicle} vehicle
      * @param {Array} workshop 
      */
-    constructor (email, phone, password = null, token = null) {
+    constructor (id, email, phone, password = null, token = null) {
+        this.id = id;
         this.email = email;
         this.phone = phone;
         this.password = password;
@@ -17,6 +19,15 @@ class User {
         this.workshop = [];
     };
 
+
+    /**
+     * Get Id
+     * Public
+     * @returns {String}
+     */
+    GetId () {
+        return this.id;
+    };
 
     /**
      * Get Email

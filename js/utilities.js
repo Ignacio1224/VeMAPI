@@ -92,7 +92,7 @@ function FillMap() {
     $('#W-C-Description').hide();
     $('#W-C-Agenda').hide();
 
-    const serv = $('#txtSearchWorkshop').val();
+    const serv = $('#W-cmbServices').val();
     LoadWorkshops(serv, true);
 }
 
@@ -181,6 +181,20 @@ function LoadFavouriteWorkshops() {
 }
 
 
+function LoadLogInData(usu = null) {
+    GetCurrentPosition();
+    LoadServices('N-cmbServices');
+    InitDatabase();
+    LoadFavouriteWorkshops();
+
+    if (usu) {
+        ToggleWindows(SV);
+    } else {
+        ToggleWindows(LV);
+    }
+}
+
+
 function LoadManteinments() {
     const vehicle = $('#M-cmbvehicles').val();
 
@@ -201,7 +215,7 @@ function LoadManteinments() {
 }
 
 
-function LoadServices (el) {
+function LoadServices(el) {
     $.ajax({
         url: 'http://api.marcelocaiafa.com/servicio',
         headers: {
@@ -215,12 +229,15 @@ function LoadServices (el) {
                 const serv = new Service(s.id, s.descripcion, s.nombre);
                 services.push(serv);
             });
+
+            $(`#${el}`).html('<option value="">Servicio</option>');
+
             services.forEach((s) => {
                 $(`#${el}`).append(`<option value="${s.GetId()}">${s.GetName()}</option>`)
             });
         },
         error: (err) => {
-            ShowModal(err);
+            ShowModal(err.responseJSON.descripcion);
         }
     });
 }
@@ -247,11 +264,11 @@ function LoadWorkshops(serv, renderMap = false) {
 
             if (renderMap) {
                 InitMap(workshops);
-            } 
-            
+            }
+
         },
         error: (err) => {
-            ShowModal(err);
+            ShowModal(err.responseJSON.descripcion);
         }
     });
 }
@@ -260,57 +277,51 @@ function LoadWorkshops(serv, renderMap = false) {
 function LogIn(v = false, usu = null) {
     if (!v) {
 
-        ClearInputs('SignIn');
         ToggleWindows(LS);
 
     } else {
 
-        let email = (usu) ? usu.GetEmail() : $('#L-email').val();
-        let password = (usu) ? usu.GetPassword() : $('#L-password').val();
-
-        if (email !== '' && password !== '' && ValidateEmail(email)) {
-
-            ClearInputs('LogIn');
-            user = new User(email, null, password);
-
-            $.ajax({
-                type: "POST",
-
-                url: "http://api.marcelocaiafa.com/login",
-
-                data: JSON.stringify(user.GenerateLogInJSON()),
-
-                dataType: "JSON",
-
-                success: function (response) {
-                    user = new User(response.description.usuario.email, response.description.usuario.telefono, null, response.description.token);
-
-                    database = window.openDatabase('Favourites', '1.0', 'Database for favourite workshops', 1024 * 1024 * 4);
-
-                    GetCurrentPosition();
-                    LoadServices('N-cmbServices');
-                    InitDatabase();
-                    LoadFavouriteWorkshops();
-
-                    if (usu) {
-                        ToggleWindows(SV);
-                    } else {
-                        ToggleWindows(LV);
-                    }
-                },
-
-                error: function (err) {
-                    ShowModal(err.responseJSON.descripcion);
-                }
-            });
-
+        if (usu) {
+            LoadLogInData();
         } else {
 
-            ShowModal('Usuario o clave incorrecto');
+            let email = $('#L-email').val();
+            let password = $('#L-password').val();
 
+            if (email !== '' && password !== '' && ValidateEmail(email)) {
+
+                user = new User(null, email, null, password);
+
+                $.ajax({
+                    type: "POST",
+
+                    url: "http://api.marcelocaiafa.com/login",
+
+                    data: JSON.stringify(user.GenerateLogInJSON()),
+
+                    dataType: "JSON",
+
+                    success: function (response) {
+                        user = new User(response.description.usuario.id, response.description.usuario.email, response.description.usuario.telefono, null, response.description.token);
+
+                        database = window.openDatabase('Favourites', '1.0', 'Database for favourite workshops', 1024 * 1024 * 4);
+
+                        LoadLogInData(usu);
+                    },
+
+                    error: function (err) {
+                        ShowModal(err.responseJSON.descripcion);
+                    }
+                });
+
+            } else {
+
+                ShowModal('Usuario o clave incorrecto');
+
+            }
         }
-    }
-};
+    };
+}
 
 
 function LogOut() {
@@ -339,13 +350,37 @@ function LogOut() {
 }
 
 
-
 function Manteinment() {
 
 }
 
 function RegisterVehicle() {
-    console.log('Add Vehicle');
+    const vehicleRegistration = $('#V-vehicle_registration').val();
+    const description = $('#V-description').val();
+
+    if (vehicleRegistration != '' && description != '') {
+    
+        const vehicle = new Vehicle(vehicleRegistration, description, user.GetId());
+        $.ajax({
+            type: "POST",
+            url: "http://api.marcelocaiafa.com/vehiculo",
+            headers: {
+                Authorization: user.GetToken()
+            },
+            data: JSON.stringify(vehicle.GetVehicleJSON()),
+            dataType: "JSON",
+            success: function (response) {
+                ClearInputs('listNewVehicle');
+                $('#V-image').prop('src', `data:image/jpeg;base64,${addImage}`);
+                ShowModal('Vehículo registrado!');
+            },
+            error: function (err) {
+                ShowModal(err.responseJSON.descripcion);
+            }
+        });
+    } else {
+        ShowModal('Los campos no pueden estar vacíos');
+    }
 }
 
 
@@ -379,7 +414,6 @@ function SignIn(v = false) {
 
     if (!v) {
 
-        ClearInputs('LogIn');
         ToggleWindows(LS);
 
     } else {
@@ -399,7 +433,7 @@ function SignIn(v = false) {
 
             } else {
 
-                user = new User(sEmail, sPhone, sPassword);
+                user = new User(null, sEmail, sPhone, sPassword);
 
                 $.ajax({
                     type: "POST",
@@ -411,9 +445,7 @@ function SignIn(v = false) {
                     dataType: "JSON",
 
                     success: function (response) {
-
-                        ClearInputs('SignIn');
-                        user = new User(response.description.usuario.email, response.description.usuario.telefono, sPassword, response.token);
+                        user = new User(response.description.usuario.id, response.description.usuario.email, response.description.usuario.telefono, sPassword, response.token);
                         LogIn(true, user);
                     },
 
