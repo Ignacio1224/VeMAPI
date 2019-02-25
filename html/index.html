@@ -145,9 +145,11 @@
                 </div>
                 <div id="M-View">
                     <h2>Listado</h2>
-                    <ons-select select-id="M-cmbvehicles" onchange="LoadMaintenances()">
+                    <ons-select select-id="M-cmbvehicles" onchange="LoadTotalPrice('M-cmbvehicles', 'M-totalPrice');">
                         <option value="">Auto</option>
                     </ons-select>
+                    
+                    <span id="M-totalPrice" style="margin-left: 2em;"></span>
                 </div>
             </div>
         </ons-page>
@@ -195,6 +197,7 @@
                                 <ons-select select-id="A-cmbvehicles" onchange="MaintenanceBehaviour('V');">
                                     <option value="">Auto</option>
                                 </ons-select>
+                                <span id="A-totalPrice" style="margin-left: 2em;"></span>
                             </ons-list-item>
                             <ons-list-item>
                                 <ons-input id="A-txtDate" modifier="underbar" type="date" onchange="MaintenanceBehaviour('Da');" float disabled></ons-input>

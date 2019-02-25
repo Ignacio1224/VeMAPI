@@ -1,5 +1,5 @@
 class Maintenance {
-    constructor(vehicle, service, workshop, date, time, description, kilometers, price) {
+    constructor(vehicle, service, workshop, date, time, description, kilometers, price, id) {
         this.vehicle = vehicle;
         this.service = service;
         this.workshop = workshop;
@@ -8,6 +8,7 @@ class Maintenance {
         this.description = description;
         this.kilometer = kilometers;
         this.price = price;
+        this.id = id;
     }
 
     /**
@@ -80,6 +81,24 @@ class Maintenance {
      */
     GetPrice() {
         return this.price;
+    }
+
+    /**
+     * Get Id
+     * Public
+     * @returns {String}
+     */
+    GetId() {
+        return this.id;
+    }
+
+    /**
+     * Get DateTime
+     * Public
+     * @returns {String}
+     */
+    GetDateTime() {
+        return this.date + " " + this.time;
     }
 
     /**

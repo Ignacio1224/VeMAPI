@@ -101,7 +101,7 @@ function FillMaintenances(m) {
     m.forEach(x => {
         $('#M-View').append(`
             <ons-list-item expandable>
-                Mantenimientos
+                Mantenimiento ${x.GetDateTime()}
                 <div class="expandable-content">
                     <ons-card>
                         <div class="title">
@@ -109,8 +109,8 @@ function FillMaintenances(m) {
                         </div>
                         <div class="content">
                             <ons-list>
-                                <ons-list-item>Fecha - ${x.GetDate()}</ons-list-item>
-                                <ons-list-item>Fecha - ${x.GetTime()}</ons-list-item>
+                                <ons-list-item>Taller - ${x.GetWorkshop()}</ons-list-item>
+                                <ons-list-item>Servicio - ${SearchService(x.GetService()).GetName()}</ons-list-item>
                                 <ons-list-item>Descripción - ${x.GetDescription()}</ons-list-item>
                                 <ons-list-item>Precio - ${x.GetPrice()} U$D</ons-list-item>
                             </ons-list>
@@ -123,6 +123,19 @@ function FillMaintenances(m) {
 }
 
 
+function LoadTotalPrice(veh, el) {
+
+    LoadMaintenances(veh).done(() => {
+        let total = 0;
+        maintenances.forEach((f) => {
+            total += parseFloat(f.GetPrice());
+        });
+    
+        $(`#${el}`).html(`Total: ${total} U$D`).show();
+    }); 
+}
+
+
 function MaintenanceBehaviour(val) {
     switch (val) {
         case 'V':
@@ -131,14 +144,17 @@ function MaintenanceBehaviour(val) {
                 MCBM = false;
             } else {
                 $('#N-cmbServices').append(`<option value="">Services</option>`);
+                $('#M-totalPrice').html('').hide();
                 $('#N-cmbServices').prop('disabled', true);
             }
             
             if ($('#A-cmbvehicles').val() !== '' && $('#A-cmbvehicles').val() !== undefined) {
                 $('#A-txtDate').prop('disabled', false);
+                LoadTotalPrice('A-cmbvehicles','A-totalPrice');
                 MCBM = true;
             } else {
                 $('#A-txtDate').prop('disabled', true);
+                $('#A-totalPrice').html('').hide();
             }
 
             break;
@@ -303,6 +319,9 @@ function MantainmentTabs(t) {
         $('#Bttn-M-T-New').addClass('M-tab-active');
         $('#Bttn-M-T-New').prop("disabled", true);
         $('#Bttn-M-T-View').prop("disabled", false);
+        $('#M-totalPrice').html('').hide();
+        ClearInputs('M-View');
+        $('#M-View ons-list-item').remove();
     } else if (t === 'V') {
         $('#Bttn-M-T-New').removeClass('M-tab-active');
         $('#Bttn-M-T-View').addClass('M-tab-active');
@@ -358,7 +377,6 @@ function WorkshopTabs(t) {
         showDirections = true;
         InitMap(workshops);
         showDirections = false;
-
     }
     switch (t) {
         case 'D':
@@ -376,6 +394,7 @@ function WorkshopTabs(t) {
             $('#Bttn-W-T-Agenda').prop("disabled", true);
             $('#Bttn-W-T-Description').prop("disabled", false);
             $('#Bttn-W-T-Route').prop("disabled", false);
+            $('#A-totalPrice').html('').hide();
             LoadVehicles('A-cmbvehicles');
             break;
         case 'R':

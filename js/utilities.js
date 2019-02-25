@@ -8,7 +8,8 @@ let services;
 
 let myVehicles;
 
-let maintainances;
+let maintenances;
+let detailedMaintenances = [];
 
 let directionsDisplay;
 let directionsService;
@@ -175,6 +176,35 @@ function IntroAction(el, fn, fnArgs = null) {
 }
 
 
+function LoadDetailedMaintenances(maintenances) {
+    maintenances.forEach((f) => {
+        const url = `http://api.marcelocaiafa.com/mantenimiento/${f.GetId()}`;
+        return $.ajax({
+            url,
+            headers: {
+                Authorization: user.GetToken()
+            },
+            dataType: 'JSON',
+            method: 'GET',
+            success: (m) => {
+                const ma = new Maintenance(m.description.vehiculo.matricula, m.description.servicio.id, m.description.mantenimiento.taller, m.description.mantenimiento.fecha.split(' ')[0], m.description.mantenimiento.fecha.split(' ')[1], m.description.mantenimiento.descripcion, m.description.mantenimiento.kilometraje, m.description.mantenimiento.costo, m.description.mantenimiento.id);
+                detailedMaintenances.push(ma);
+                
+                detailedMaintenances.sort(function (a, b) {
+                    return new Date(b.GetDate() + " " + b.GetTime()) - new Date(a.GetDate() + " " + a.GetTime())
+                });
+    
+                FillMaintenances(detailedMaintenances);
+    
+            },
+            error: (err) => {
+                ShowModal(err.responseJSON.descripcion);
+            }
+        });
+    });
+}
+
+
 function LoadFavouriteWorkshops() {
     favouriteWorkshops = [];
     return new Promise((resolve, reject) => {
@@ -208,8 +238,8 @@ function LoadLogInData(usu = null) {
 }
 
 
-function LoadMaintenances() {
-    const vehicle = $('#M-cmbvehicles').val();
+function LoadMaintenances(veh) {
+    let vehicle = $(`#${veh}`).val();
     if (vehicle == '') {
         return $('#M-View ons-list-item').remove();
     }
@@ -223,13 +253,17 @@ function LoadMaintenances() {
         dataType: 'JSON',
         method: 'GET',
         success: (request) => {
-            maintainances = [];
+            maintenances = [];
             request.description.forEach((m) => {
-                const ma = new Maintenance(vehicle, null, null, m.fecha.split(' ')[0], m.fecha.split(' ')[1], m.descripcion, null, m.costo);
-                maintainances.push(ma);
+                const ma = new Maintenance(vehicle, null, null, m.fecha.split(' ')[0], m.fecha.split(' ')[1], m.descripcion, null, m.costo, m.id);
+                maintenances.push(ma);
             });
 
-            FillMaintenances(maintainances);
+            maintenances.sort(function (a, b) {
+                return new Date(b.GetDate() + " " + b.GetTime()) - new Date(a.GetDate() + " " + a.GetTime())
+            });
+
+            LoadDetailedMaintenances(maintenances);
 
         },
         error: (err) => {
@@ -461,6 +495,19 @@ function SearchFavouriteWorkshop(id) {
         i++;
     }
     return w;
+}
+
+
+function SearchService(id) {
+    let i = 0;
+    let s = null;
+    while (!s && i < services.length) {
+        if (services[i].GetId() == id) {
+            s = services[i];
+        }
+        i++;
+    }
+    return s;
 }
 
 
