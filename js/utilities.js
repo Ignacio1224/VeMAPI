@@ -6,6 +6,10 @@ let favouriteWorkshops;
 
 let services;
 
+let myVehicles;
+
+let maintainances;
+
 let directionsDisplay;
 let directionsService;
 let showDirections;
@@ -67,7 +71,7 @@ function CalculateRoute(end) {
 
 function ChangeImage() {
     navigator.camera.getPicture((img) => {
-        $('#V-image').prop('src', `data:image/jpeg;base64,${img}`);
+        $('#V-image').attr('src', `data:image/jpeg;base64,${img}`);
         const vehicleRegistration = $('#V-car_registration').val();
         AddImage(vehicleRegistration, img);
     }, (err) => {
@@ -93,7 +97,9 @@ function FillMap() {
     $('#W-C-Agenda').hide();
 
     const serv = $('#W-cmbServices').val();
-    LoadWorkshops(serv, true);
+    LoadWorkshops(serv).done(() => {
+        InitMap(workshops)
+    });
 }
 
 
@@ -147,8 +153,10 @@ function InitMap(wrk) {
                 title: w.GetId(),
                 label: w.GetDescription()
             });
+
             marker.setMap(map);
             marker.addListener('click', DisplayWCard);
+
         });
     }
 }
@@ -169,23 +177,28 @@ function IntroAction(el, fn, fnArgs = null) {
 
 function LoadFavouriteWorkshops() {
     favouriteWorkshops = [];
-    database.transaction(
-        (tx) => {
-            tx.executeSql("SELECT Email, Id FROM FavouriteWorkshop", [], (tx, results) => {
-                for (r of results.rows) {
-                    favouriteWorkshops.push(r);
-                }
-            });
-        }
-    );
+    return new Promise((resolve, reject) => {
+        database.transaction(
+            (tx) => {
+                tx.executeSql("SELECT Email, Id FROM FavouriteWorkshop", [], (tx, results) => {
+                    for (r of results.rows) {
+                        favouriteWorkshops.push(r);
+                    }
+                    resolve(true);
+                });
+            }
+        );
+    });
 }
 
 
 function LoadLogInData(usu = null) {
     GetCurrentPosition();
+    LoadVehicles('N-cmbvehicles');
     LoadServices('N-cmbServices');
     InitDatabase();
     LoadFavouriteWorkshops();
+    LoadVehicles();
 
     if (usu) {
         ToggleWindows(SV);
@@ -195,28 +208,39 @@ function LoadLogInData(usu = null) {
 }
 
 
-function LoadManteinments() {
+function LoadMaintenances() {
     const vehicle = $('#M-cmbvehicles').val();
+    if (vehicle == '') {
+        return $('#M-View ons-list-item').remove();
+    }
 
-    // Get All Mantainmentos of selected vehicle
-    FillManteinments([{
-        fecha: '12/12/12',
-        taller: "doctorcar",
-        servicio: 'cambio de aros',
-        descripcion: 'aaa',
-        precio: 135
-    }, {
-        fecha: '12/12/12',
-        taller: "doctorcar",
-        servicio: 'cambio de aros',
-        descripcion: 'aaa',
-        precio: 135
-    }])
+    const url = `http://api.marcelocaiafa.com/mantenimiento/?vehiculo=${vehicle}`;
+    return $.ajax({
+        url,
+        headers: {
+            Authorization: user.GetToken()
+        },
+        dataType: 'JSON',
+        method: 'GET',
+        success: (request) => {
+            maintainances = [];
+            request.description.forEach((m) => {
+                const ma = new Maintenance(vehicle, null, null, m.fecha.split(' ')[0], m.fecha.split(' ')[1], m.descripcion, null, m.costo);
+                maintainances.push(ma);
+            });
+
+            FillMaintenances(maintainances);
+
+        },
+        error: (err) => {
+            ShowModal(err.responseJSON.descripcion);
+        }
+    });
 }
 
 
 function LoadServices(el) {
-    $.ajax({
+    return $.ajax({
         url: 'http://api.marcelocaiafa.com/servicio',
         headers: {
             Authorization: user.GetToken()
@@ -230,11 +254,13 @@ function LoadServices(el) {
                 services.push(serv);
             });
 
-            $(`#${el}`).html('<option value="">Servicio</option>');
+            if (el) {
+                $(`#${el}`).html('<option value="">Servicio</option>');
 
-            services.forEach((s) => {
-                $(`#${el}`).append(`<option value="${s.GetId()}">${s.GetName()}</option>`)
-            });
+                services.forEach((s) => {
+                    $(`#${el}`).append(`<option value="${s.GetId()}">${s.GetName()}</option>`)
+                });
+            }
         },
         error: (err) => {
             ShowModal(err.responseJSON.descripcion);
@@ -243,12 +269,45 @@ function LoadServices(el) {
 }
 
 
-function LoadWorkshops(serv, renderMap = false) {
+function LoadVehicles(el) {
+    const url = `http://api.marcelocaiafa.com/vehiculo/?usuario=${user.GetId()}`;
+    return $.ajax({
+        url,
+        headers: {
+            Authorization: user.GetToken()
+        },
+        dataType: 'JSON',
+        method: 'GET',
+        success: (request) => {
+            myVehicles = [];
+            request.description.forEach((v) => {
+                const vehicle = new Vehicle(v.matricula, v.descripcion, user.GetId(), v.id);
+                myVehicles.push(vehicle);
+            });
+
+            if (el) {
+                $(`#${el}`).html('<option value="">Vehículo</option>');
+                myVehicles.forEach((v) => {
+                    $(`#${el}`).append(`<option value="${v.GetId()}">${v.GetRegistration()}</option>`)
+                });
+            }
+
+
+        },
+        error: (err) => {
+            ShowModal(err.responseJSON.descripcion);
+        }
+    });
+}
+
+
+function LoadWorkshops(serv) {
     if (serv == "") {
         return ShowModal("El servicio no puede estar vacío");
     }
+
     const url = `http://api.marcelocaiafa.com/taller?servicio=${serv}`;
-    $.ajax({
+    return $.ajax({
         url,
         headers: {
             Authorization: user.GetToken()
@@ -261,10 +320,6 @@ function LoadWorkshops(serv, renderMap = false) {
                 const wrk = new Workshop(serv, w.direccion, w.telefono, w.descripcion, w.imagen, w.id, w.lat, w.lng);
                 workshops.push(wrk);
             });
-
-            if (renderMap) {
-                InitMap(workshops);
-            }
 
         },
         error: (err) => {
@@ -350,75 +405,21 @@ function LogOut() {
 }
 
 
-function Manteinment(val) {
-    switch (val) {
-        case 'S':
-            if ($('#N-cmbServices').val() !== '') {
-                const serv = $('#N-cmbServices').val();
-                LoadWorkshops(serv);
-                LoadFavouriteWorkshops();
-                setTimeout(() => {
-                    $('#N-cmbWorkshopsFav').html('<option value="">Taller Favorito</option>');
-                    workshops.forEach((w) => {
-                        for (let i = 0; i < favouriteWorkshops.length; i++) {
-                            if (w.GetId() == String(favouriteWorkshops[i].Id)) {
-                                $('#N-cmbWorkshopsFav').append(`<option value="${w.GetId()}">${w.GetDescription()}</option>`);
-                            }
-
-                        }
-                    });
-    
-                    $('#N-cmbWorkshopsFav').prop('disabled', false);
-                }, 1200);
-                
-            }
-            break;
-
-        case 'W':
-            if ($('#N-cmbWorkshopsFav').val() !== '') {
-                $('#N-txtDate').prop('disabled', false);
-            }
-            break;
-
-        case 'Da':
-            if ($('#N-txtDate').val() !== '') {
-                $('#N-txtDescription').prop('disabled', false);
-            }
-            break;
-
-        case 'De':
-            if ($('#N-txtDescription').val() !== '') {
-                $('#N-txtKilometers').prop('disabled', false);
-            }
-            break;
-
-        case 'K':
-            if ($('#N-txtKilometers').val() !== '') {
-                $('#N-txtPrice').prop('disabled', false);
-            }
-            break;
-
-        case 'P':
-            if ($('#N-txtPrice').val() !== '') {
-                $('#N-BttnAdd').prop('disabled', false);
-            }
-            break;
-
-        case true:
-            const vehicle = $('#N-cmbvehicles').val();
-            const service = $('#N-cmbServices').val();
-            const fworkshop = $('#N-cmbWorkshopsFav').val();
-            const date = $('#N-txtDate').val();
-            const description = $('#N-txtDescription').val();
-            const kilometers = $('#N-txtKilometers').val();
-            const price = $('#N-txtPrice').val();
-            console.log(vehicle, service, fworkshop, date, description, kilometers, price);
-
-            break;
-        default:
-            break;
-    }
+function RegisterMaintenace(m) {
+    return $.ajax({
+        url: 'http://api.marcelocaiafa.com/mantenimiento',
+        headers: {
+            Authorization: user.GetToken()
+        },
+        dataType: 'JSON',
+        method: 'POST',
+        data: JSON.stringify(m.GetJSON()),
+        error: (err) => {
+            ShowModal(err.responseJSON.descripcion);
+        }
+    });
 }
+
 
 function RegisterVehicle() {
     const vehicleRegistration = $('#V-vehicle_registration').val();
@@ -426,7 +427,7 @@ function RegisterVehicle() {
 
     if (vehicleRegistration != '' && description != '') {
 
-        const vehicle = new Vehicle(vehicleRegistration, description, user.GetId());
+        const vehicle = new Vehicle(vehicleRegistration, description, user.GetId(), null);
         $.ajax({
             type: "POST",
             url: "http://api.marcelocaiafa.com/vehiculo",

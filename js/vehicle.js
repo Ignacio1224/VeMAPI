@@ -6,18 +6,31 @@ class Vehicle {
      * @param {String} description 
      * @param {User} user
      */
-    constructor (vehicleRegistration, description, user) {
+    constructor(vehicleRegistration, description, user, id) {
         this.vehicleRegistration = vehicleRegistration;
         this.description = description;
         this.user = user
+        this.id = id;
     };
 
 
-    GetVehicleJSON () {
+    GetId() {
+        return this.id;
+    }
+
+    GetRegistration() {
+        return this.vehicleRegistration;
+    }
+
+    GetDescription() {
+        return this.description;
+    }
+
+    GetVehicleJSON() {
         const vehicle = {
-            matricula : this.vehicleRegistration,
-            descripcion : this.description,
-            usuario : this.user
+            matricula: this.vehicleRegistration,
+            descripcion: this.description,
+            usuario: this.user
         };
         return vehicle;
     };

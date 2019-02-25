@@ -4,6 +4,8 @@ const SV = ['SignIn', 'VeMAPI']
 const MT = ['M-New', 'M-View'];
 const WT = ['W-C-Description', 'W-C-Agenda'];
 
+// Says if maintainance is created by map or by favourite workshops
+let MCBM; 
 
 ons.ready(() => {
     window.fn = {};
@@ -93,7 +95,7 @@ function DisplayWCard() {
 }
 
 
-function FillManteinments(m) {
+function FillMaintenances(m) {
     $('#M-View ons-list-item').remove();
 
     m.forEach(x => {
@@ -107,11 +109,10 @@ function FillManteinments(m) {
                         </div>
                         <div class="content">
                             <ons-list>
-                                <ons-list-item>Fecha - ${x.fecha}</ons-list-item>
-                                <ons-list-item>Taller - ${x.taller}</ons-list-item>
-                                <ons-list-item>Servicio - ${x.servicio}</ons-list-item>
-                                <ons-list-item>Descripción - ${x.descripcion}</ons-list-item>
-                                <ons-list-item>Precio - ${x.precio}</ons-list-item>
+                                <ons-list-item>Fecha - ${x.GetDate()}</ons-list-item>
+                                <ons-list-item>Fecha - ${x.GetTime()}</ons-list-item>
+                                <ons-list-item>Descripción - ${x.GetDescription()}</ons-list-item>
+                                <ons-list-item>Precio - ${x.GetPrice()} U$D</ons-list-item>
                             </ons-list>
                         </div>
                     </ons-card>
@@ -119,6 +120,179 @@ function FillManteinments(m) {
             </ons-list-item>
         `);
     });
+}
+
+
+function MaintenanceBehaviour(val) {
+    switch (val) {
+        case 'V':
+            if ($('#N-cmbvehicles').val() !== '' && $('#N-cmbvehicles').val() !== undefined) {
+                $('#N-cmbServices').prop('disabled', false);
+                MCBM = false;
+            } else {
+                $('#N-cmbServices').append(`<option value="">Services</option>`);
+                $('#N-cmbServices').prop('disabled', true);
+            }
+            
+            if ($('#A-cmbvehicles').val() !== '' && $('#A-cmbvehicles').val() !== undefined) {
+                $('#A-txtDate').prop('disabled', false);
+                MCBM = true;
+            } else {
+                $('#A-txtDate').prop('disabled', true);
+            }
+
+            break;
+
+        case 'S':
+            if ($('#N-cmbServices').val() !== '' && $('#N-cmbServices').val() !== undefined) {
+                const serv = $('#N-cmbServices').val();
+                LoadWorkshops(serv).done(() => {
+                    LoadFavouriteWorkshops().then(() => {
+                        $('#N-cmbWorkshopsFav').html('<option value="">Taller Favorito</option>');
+                        workshops.forEach((w) => {
+                            for (let i = 0; i < favouriteWorkshops.length; i++) {
+                                if (w.GetId() == String(favouriteWorkshops[i].Id)) {
+                                    $('#N-cmbWorkshopsFav').append(`<option value="${w.GetId()}">${w.GetDescription()}</option>`);
+                                }
+                                
+                            }
+                        });
+                        
+                        $('#N-cmbWorkshopsFav').prop('disabled', false);
+                    });
+                });
+            } else {
+                $('#N-cmbWorkshopsFav').html('<option value="">Taller Favorito</option>');
+                $('#N-cmbWorkshopsFav').prop('disabled', true);
+            }
+
+            break;
+
+        case 'W':
+            if ($('#N-cmbWorkshopsFav').val() !== '' && $('#N-cmbServices').val() !== undefined) {
+                $('#N-txtDate').prop('disabled', false);
+            } else {
+                $('#N-txtDate').prop('disabled', true);
+            }
+
+            break;
+
+        case 'Da':
+            if ($('#N-txtDate').val() !== '' && $('#N-txtDate').val() !== undefined) {
+                $('#N-txtTime').prop('disabled', false);
+            } else {
+                $('#N-txtTime').prop('disabled', true);
+            }
+            
+            if ($('#A-txtDate').val() !== '' && $('#A-txtDate').val() !== undefined) {
+                $('#A-txtTime').prop('disabled', false);
+            } else {
+                $('#A-txtTime').prop('disabled', true);
+            }
+
+            break;
+
+        case 'T':
+            if ($('#N-txtTime').val() !== '' && $('#N-txtTime').val() !== undefined) {
+                $('#N-txtDescription').prop('disabled', false);
+            } else {
+                $('#N-txtDescription').prop('disabled', true);
+            }
+            
+            if ($('#A-txtTime').val() !== '' && $('#A-txtTime').val() !== undefined) {
+                $('#A-txtDescription').prop('disabled', false);
+            } else {
+                $('#A-txtDescription').prop('disabled', true);
+            }
+
+            break;
+
+        case 'De':
+            if ($('#N-txtDescription').val() !== '' && $('#N-txtDescription').val() !== undefined) {
+                $('#N-txtKilometers').prop('disabled', false);
+            } else {
+                $('#N-txtKilometers').prop('disabled', true);
+            }
+
+            if ($('#A-txtDescription').val() !== '' && $('#A-txtDescription').val() !== undefined) {
+                $('#A-txtKilometers').prop('disabled', false);
+            } else {
+                $('#A-txtKilometers').prop('disabled', true);
+            }
+
+            break;
+
+        case 'K':
+            if ($('#N-txtKilometers').val() !== '' && $('#N-txtKilometers').val()) {
+                $('#N-txtPrice').prop('disabled', false);
+            } else {
+                $('#N-txtPrice').prop('disabled', true);
+            }
+
+            if ($('#A-txtKilometers').val() !== '' && $('#A-txtKilometers').val() !== undefined) {
+                $('#A-txtPrice').prop('disabled', false);
+            } else {
+                $('#A-txtPrice').prop('disabled', true);
+            }
+
+            break;
+
+        case 'P':
+            if ($('#N-txtPrice').val() !== '' && $('#N-txtPrice').val() !== undefined) {
+                $('#N-BttnAdd').prop('disabled', false);
+            } else {
+                $('#N-BttnAdd').prop('disabled', true);
+            }
+
+            if ($('#A-txtPrice').val() !== '' && $('#A-txtPrice').val() !== undefined) {
+                $('#A-bttnAgenda').prop('disabled', false);
+            } else {
+                $('#A-bttnAgenda').prop('disabled', true);
+            }
+
+            break;
+
+        case true:
+            const vehicle = (MCBM) ? $('#A-cmbvehicles').val() : $('#N-cmbvehicles').val();
+            const service = (MCBM) ? $('#W-cmbServices').val() : $('#N-cmbServices').val();
+            const mworkshop = (MCBM) ? workshop.GetId() : $('#N-cmbWorkshopsFav').val();
+            const date = (MCBM) ? $('#A-txtDate').val(): $('#N-txtDate').val();
+            const time = (MCBM) ? $('#A-txtTime').val() : $('#N-txtTime').val();
+            const description = (MCBM) ? $('#A-txtDescription').val() : $('#N-txtDescription').val();
+            const kilometers = (MCBM) ? $('#A-txtKilometers').val() : $('#N-txtKilometers').val();
+            const price = (MCBM) ? $('#A-txtPrice').val() : $('#N-txtPrice').val();
+            if (vehicle != '' && service != '' && mworkshop != '' && date != '' && time != '' && description != '' && kilometers != '' && price != '') {
+                const m = new Maintenance(vehicle, service, mworkshop, date, time, description, kilometers, price);
+
+                RegisterMaintenace(m).done(() => {
+                    if (MCBM) {
+                        ClearInputs('W-C-Agenda');
+                        $('#A-txtDate').prop('disabled', true);
+                        $('#A-txtTime').prop('disabled', true);
+                        $('#A-txtDescription').prop('disabled', true);
+                        $('#A-txtKilometers').prop('disabled', true);
+                        $('#A-txtPrice').prop('disabled', true);
+                        $('#A-BttnAdd').prop('disabled', true);
+                    } else if (MCBM === false){
+                        ClearInputs('M-New');
+                        $('#N-cmbServices').prop('disabled', true);
+                        $('#N-cmbWorkshopsFav').prop('disabled', true);
+                        $('#N-txtDate').prop('disabled', true);
+                        $('#N-txtTime').prop('disabled', true);
+                        $('#N-txtDescription').prop('disabled', true);
+                        $('#N-txtKilometers').prop('disabled', true);
+                        $('#N-txtPrice').prop('disabled', true);
+                        $('#N-BttnAdd').prop('disabled', true);    
+                    }
+                    
+                    ShowModal('Mantenimiento agendado');
+                });
+            }
+            break;
+
+        default:
+            break;
+    }
 }
 
 
@@ -134,6 +308,7 @@ function MantainmentTabs(t) {
         $('#Bttn-M-T-View').addClass('M-tab-active');
         $('#Bttn-M-T-New').prop("disabled", false);
         $('#Bttn-M-T-View').prop("disabled", true);
+        LoadVehicles('M-cmbvehicles');
     }
 }
 
@@ -159,7 +334,7 @@ function ToggleWindows(ws) {
             $('#W-TabPane').hide();
             $('#W-C-Description').hide();
             $('#W-C-Agenda').hide();
-
+            $('#M-View ons-list-item').remove();
         }
 
         const r = Math.floor(Math.random() * 101);
@@ -201,6 +376,7 @@ function WorkshopTabs(t) {
             $('#Bttn-W-T-Agenda').prop("disabled", true);
             $('#Bttn-W-T-Description').prop("disabled", false);
             $('#Bttn-W-T-Route').prop("disabled", false);
+            LoadVehicles('A-cmbvehicles');
             break;
         case 'R':
             $('#Bttn-W-T-Description').removeClass('three-tab-active');

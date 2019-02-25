@@ -26,6 +26,7 @@
     <script src="../js/user.js"></script>
     <script src="../js/workshop.js"></script>
     <script src="../js/service.js"></script>
+    <script src="../js/maintenance.js"></script>
     <script src="../js/utilities.js"></script>
     <script src="../js/ui.js"></script>
 
@@ -112,38 +113,39 @@
                 <div id="M-New">
                     <h2>Nuevo</h2>
                     <div>
-                        <ons-select select-id="N-cmbvehicles">
-                            <option value="">Auto</option>
+                        <ons-select select-id="N-cmbvehicles" onchange="MaintenanceBehaviour('V');">
+                            <option value="">Veh&iacute;culo</option>
                         </ons-select>
-                        <ons-select select-id="N-cmbServices" onchange="Manteinment('S');">
+                        <ons-select select-id="N-cmbServices" onchange="MaintenanceBehaviour('S');" disabled>
                             <option value="">Servicio</option>
                         </ons-select>
-                        <ons-select select-id="N-cmbWorkshopsFav" onchange="Manteinment('W');" disabled>
+                        <ons-select select-id="N-cmbWorkshopsFav" onchange="MaintenanceBehaviour('W');" disabled>
                             <option value="">Taller Favorito</option>
                         </ons-select>
                     </div>
 
                     <div>
-                        <ons-input id="N-txtDate" modifier="underbar" type="date" float onchange="Manteinment('Da');" disabled></ons-input>
+                        <ons-input id="N-txtDate" modifier="underbar" type="date" float onchange="MaintenanceBehaviour('Da');" disabled></ons-input>
+                        <ons-input id="N-txtTime" modifier="underbar" type="time" float onchange="MaintenanceBehaviour('T');" disabled></ons-input>
                     </div>
                     <div>
-                        <textarea id="N-txtDescription" rows="4" class="textarea" placeholder="Descripción" onkeyup="Manteinment('De');" disabled></textarea>
+                        <textarea id="N-txtDescription" rows="4" class="textarea" placeholder="Descripción" onkeyup="MaintenanceBehaviour('De');" disabled></textarea>
                     </div>
                     <div>
-                        <ons-input id="N-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje" onkeyup="Manteinment('K');" float disabled></ons-input>
+                        <ons-input id="N-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje" onkeyup="MaintenanceBehaviour('K');" float disabled></ons-input>
                     </div>
                     <div>
-                        <ons-input id="N-txtPrice" modifier="underbar" type="number" placeholder="Precio" onkeyup="Manteinment('P');" float disabled></ons-input>
+                        <ons-input id="N-txtPrice" modifier="underbar" type="number" placeholder="Precio" onkeyup="MaintenanceBehaviour('P');" float disabled></ons-input>
                     </div>
 
                     <div id="N-DAdd">
-                        <ons-button id="N-BttnAdd" disabled onclick="Manteinment(true);">Agregar</ons-button>
+                        <ons-button id="N-BttnAdd" disabled onclick="MaintenanceBehaviour(true);">Agregar</ons-button>
                     </div>
 
                 </div>
                 <div id="M-View">
                     <h2>Listado</h2>
-                    <ons-select id="M-cmbvehicles" onchange="LoadManteinments()">
+                    <ons-select select-id="M-cmbvehicles" onchange="LoadMaintenances()">
                         <option value="">Auto</option>
                     </ons-select>
                 </div>
@@ -190,27 +192,28 @@
                     <div class="content">
                         <ons-list>
                             <ons-list-item>
-                                <ons-select id="A-cmbvehicles">
+                                <ons-select select-id="A-cmbvehicles" onchange="MaintenanceBehaviour('V');">
                                     <option value="">Auto</option>
                                 </ons-select>
                             </ons-list-item>
                             <ons-list-item>
-                                <ons-input id="A-txtDate" modifier="underbar" type="date" float disabled></ons-input>
+                                <ons-input id="A-txtDate" modifier="underbar" type="date" onchange="MaintenanceBehaviour('Da');" float disabled></ons-input>
+                                <ons-input id="A-txtTime" modifier="underbar" type="time" onchange="MaintenanceBehaviour('T');" float disabled></ons-input>
                             </ons-list-item>
                             <ons-list-item>
-                                <textarea id="A-txtDescription" rows="4" class="textarea" placeholder="Descripción"
+                                <textarea id="A-txtDescription" rows="4" class="textarea" placeholder="Descripción" onkeyup="MaintenanceBehaviour('De');"
                                     disabled></textarea>
                             </ons-list-item>
                             <ons-list-item>
-                                <ons-input id="A-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje"
+                                <ons-input id="A-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje" onkeyup="MaintenanceBehaviour('K');"
                                     float disabled></ons-input>
                             </ons-list-item>
                             <ons-list-item>
-                                <ons-input id="A-txtPrice" modifier="underbar" type="number" placeholder="Precio" float disabled></ons-input>
+                                <ons-input id="A-txtPrice" modifier="underbar" type="number" placeholder="Precio" onkeyup="MaintenanceBehaviour('P');" float disabled></ons-input>
                             </ons-list-item>
                         </ons-list>
                         <p style="text-align: center; margin-top: 30px;">
-                            <ons-button onclick="Agenda();" disabled>Agendarme</ons-button>
+                            <ons-button id="A-bttnAgenda" onclick="MaintenanceBehaviour(true);" disabled>Agendarme</ons-button>
                         </p>
                     </div>
                 </ons-card>
