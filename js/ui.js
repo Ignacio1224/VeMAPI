@@ -23,6 +23,7 @@ ons.ready(() => {
         
         if (page === 'mantainment.html') {
             setTimeout(() => {
+                LoadVehicles('N-cmbvehicles');
                 LoadServices('N-cmbServices');
             }, 100);
         }

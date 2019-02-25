@@ -98,7 +98,7 @@ class Maintenance {
      * @returns {String}
      */
     GetDateTime() {
-        return this.date + " " + this.time;
+        return this.date.split('-').reverse().join('-').replace(/-/g, '/') + " " + this.time;
     }
 
     /**

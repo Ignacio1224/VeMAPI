@@ -93,14 +93,17 @@ function ClearInputs(place) {
 
 
 function FillMap() {
-    $('#W-TabPane').hide();
-    $('#W-C-Description').hide();
-    $('#W-C-Agenda').hide();
-
     const serv = $('#W-cmbServices').val();
-    LoadWorkshops(serv).done(() => {
-        InitMap(workshops)
-    });
+    if (serv !== '') {
+        LoadWorkshops(serv).done(() => {
+            InitMap(workshops)
+        });
+    } else {
+        $('#googleMap').html('');
+        $('#W-TabPane').hide();
+        $('#W-C-Description').hide();
+        $('#W-C-Agenda').hide();
+    }
 }
 
 
@@ -224,11 +227,10 @@ function LoadFavouriteWorkshops() {
 
 function LoadLogInData(usu = null) {
     GetCurrentPosition();
-    LoadVehicles('N-cmbvehicles');
-    LoadServices('N-cmbServices');
     InitDatabase();
     LoadFavouriteWorkshops();
-    LoadVehicles();
+    LoadVehicles('N-cmbvehicles');
+    LoadServices('N-cmbServices');
 
     if (usu) {
         ToggleWindows(SV);
