@@ -355,6 +355,7 @@ function ToggleWindows(ws) {
             $('#W-C-Description').hide();
             $('#W-C-Agenda').hide();
             $('#M-View ons-list-item').remove();
+            $('#M-totalPrice').html('').hide();
         }
 
         const r = Math.floor(Math.random() * 101);

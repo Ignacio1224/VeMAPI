@@ -424,14 +424,25 @@ function LogOut() {
         },
         success: function (response) {
             user = null;
+
             workshop = null;
             workshops = null;
             favouriteWorkshops = null;
+
+            services = null;
+
+            myVehicles = null;
+
+            maintenances = null;
+            detailedMaintenances = [];
+            
             directionsDisplay = null;
             directionsService = null;
             showDirections = null;
             myPosition = null;
+
             database = null;
+
             ToggleWindows(LV);
         },
         error: function (err) {
