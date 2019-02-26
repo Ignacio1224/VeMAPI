@@ -19,6 +19,7 @@ let myPosition;
 let database;
 
 
+
 function AddFavouriteWorkshop(wrk) {
 
     if ($('#W-favourite').is(':checked')) {
@@ -45,9 +46,9 @@ function AddFavouriteWorkshop(wrk) {
 }
 
 
-function AddImage(vehicle, url) {
+function AddImageDatabase(vehicle, url) {
     database.transaction((tx) => {
-        tx.executeSql('INSERT INTO VehicleImage VALUES (VehicleRegistration=?, Url=?)', [vehicle, url]);
+        tx.executeSql('INSERT INTO VehicleImage VALUES (?,?)', [vehicle, url]);
     });
 }
 
@@ -70,15 +71,31 @@ function CalculateRoute(end) {
 }
 
 
-function ChangeImage() {
+function GetImage(vehicleRegistration) {
     navigator.camera.getPicture((img) => {
-        $('#V-image').attr('src', `data:image/jpeg;base64,${img}`);
-        const vehicleRegistration = $('#V-car_registration').val();
-        AddImage(vehicleRegistration, img);
+        AddImageDatabase(vehicleRegistration, img);
+        return img;
     }, (err) => {
         ShowModal('No se pudo tomar la foto');
     }, {
         destinationType: Camera.DestinationType.DATA_URL
+    });
+}
+
+
+function GetVehicleImage(veh) {
+    let vehicleImage = null;
+    return new Promise((resolve, reject) => {
+        database.transaction(
+            (tx) => {
+                tx.executeSql("SELECT Url FROM VehicleImage WHERE VehicleRegistration=?", [veh], (tx, result) => {
+                    if (result.rows[0]) {
+                        vehicleImage = (`data:image/jpeg;base64,${result.rows[0].Url}`);
+                    }
+                    resolve(vehicleImage);
+                });
+            }
+        );
     });
 }
 
@@ -131,6 +148,7 @@ function InitDatabase() {
             tx.executeSql("CREATE TABLE IF NOT EXISTS VehicleImage (VehicleRegistration, Url)", []);
         }
     );
+    // AddImageDatabase('asd-7894', addImage);
 }
 
 
@@ -192,13 +210,13 @@ function LoadDetailedMaintenances(maintenances) {
             success: (m) => {
                 const ma = new Maintenance(m.description.vehiculo.matricula, m.description.servicio.id, m.description.mantenimiento.taller, m.description.mantenimiento.fecha.split(' ')[0], m.description.mantenimiento.fecha.split(' ')[1], m.description.mantenimiento.descripcion, m.description.mantenimiento.kilometraje, m.description.mantenimiento.costo, m.description.mantenimiento.id);
                 detailedMaintenances.push(ma);
-                
+
                 detailedMaintenances.sort(function (a, b) {
                     return new Date(b.GetDate() + " " + b.GetTime()) - new Date(a.GetDate() + " " + a.GetTime())
                 });
-    
+
                 FillMaintenances(detailedMaintenances);
-    
+
             },
             error: (err) => {
                 ShowModal(err.responseJSON.descripcion);
@@ -225,26 +243,7 @@ function LoadFavouriteWorkshops() {
 }
 
 
-function LoadLogInData(usu = null) {
-    GetCurrentPosition();
-    InitDatabase();
-    LoadFavouriteWorkshops();
-    LoadVehicles('N-cmbvehicles');
-    LoadServices('N-cmbServices');
-
-    if (usu) {
-        ToggleWindows(SV);
-    } else {
-        ToggleWindows(LV);
-    }
-}
-
-
-function LoadMaintenances(veh) {
-    let vehicle = $(`#${veh}`).val();
-    if (vehicle == '') {
-        return $('#M-View ons-list-item').remove();
-    }
+function LoadMaintenances(vehicle) {
 
     const url = `http://api.marcelocaiafa.com/mantenimiento/?vehiculo=${vehicle}`;
     return $.ajax({
@@ -435,7 +434,7 @@ function LogOut() {
 
             maintenances = null;
             detailedMaintenances = [];
-            
+
             directionsDisplay = null;
             directionsService = null;
             showDirections = null;
@@ -524,6 +523,19 @@ function SearchService(id) {
 }
 
 
+function SearchVehicle(id) {
+    let i = 0;
+    let v = null;
+    while (!v && i < myVehicles.length) {
+        if (myVehicles[i].GetId() == id) {
+            v = myVehicles[i];
+        }
+        i++;
+    }
+    return v;
+}
+
+
 function SearchWrk(id) {
     let i = 0;
     let w = null;
@@ -592,4 +604,9 @@ function ValidateEmail(mail) {
         valid = true;
     }
     return (valid);
+}
+
+
+function VehicleImage(veh) {
+
 }

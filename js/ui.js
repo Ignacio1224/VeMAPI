@@ -25,12 +25,15 @@ ons.ready(() => {
             setTimeout(() => {
                 LoadVehicles('N-cmbvehicles');
                 LoadServices('N-cmbServices');
+                $('#N-img-auto').hide();
+                $('#M-img-auto').hide();
             }, 100);
         }
 
         if (page === 'workshops.html') {
             setTimeout(() => {
                 LoadServices('W-cmbServices');
+                $('#A-img-auto').hide();
             }, 100);
         }
         
@@ -56,6 +59,22 @@ ons.ready(() => {
     IntroAction('S-phone', LogIn, true);
 
 });
+
+
+function AddVehicleImage() {
+    const img = GetImage($('#V-car_registration').val());
+    $('#V-image').attr('src', `data:image/jpeg;base64,${img}`);    
+}
+
+
+function LoadVehicleImage(veh, el) {
+    GetVehicleImage(SearchVehicle(veh).GetRegistration()).then((vehicleImage) => {
+        if (vehicleImage) {
+            $(`#${el}`).attr('src', vehicleImage).show();
+        }
+    });
+    
+}
 
 
 function DisplayWCard() {
@@ -124,24 +143,51 @@ function FillMaintenances(m) {
 }
 
 
-function LoadTotalPrice(veh, el) {
+function LoadLogInData(usu = null) {
+    GetCurrentPosition();
+    InitDatabase();
+    LoadFavouriteWorkshops();
+    LoadVehicles('N-cmbvehicles');
+    LoadServices('N-cmbServices');
+    $('#N-img-auto').hide();
 
-    LoadMaintenances(veh).done(() => {
-        let total = 0;
-        maintenances.forEach((f) => {
-            total += parseFloat(f.GetPrice());
-        });
+    if (usu) {
+        ToggleWindows(SV);
+    } else {
+        ToggleWindows(LV);
+    }
+}
+
+
+function LoadTotalPrice(veh, el) {
+    $('#M-View ons-list-item').remove();
+    $(`#${el}`).html('');
+    $('#M-img-auto').hide();
+    let vehicle = $(`#${veh}`).val();
     
-        $(`#${el}`).html(`Total: ${total} U$D`).show();
-    }); 
+    if (vehicle != '') {
+        LoadMaintenances(vehicle).done(() => {
+            let total = 0;
+            maintenances.forEach((f) => {
+                total += parseFloat(f.GetPrice());
+            });
+            
+            $(`#${el}`).html(`Total: ${total} U$D`).show();
+            
+            LoadVehicleImage(vehicle, 'M-img-auto');
+        });
+    }
 }
 
 
 function MaintenanceBehaviour(val) {
     switch (val) {
         case 'V':
-            if ($('#N-cmbvehicles').val() !== '' && $('#N-cmbvehicles').val() !== undefined) {
+            let veh = $('#N-cmbvehicles').val();
+            if (veh !== '' && veh !== undefined) {
                 $('#N-cmbServices').prop('disabled', false);
+                $('#N-img-auto').hide();
+                LoadVehicleImage(veh, 'N-img-auto');
                 MCBM = false;
             } else {
                 $('#N-cmbServices').append(`<option value="">Services</option>`);
@@ -149,9 +195,12 @@ function MaintenanceBehaviour(val) {
                 $('#N-cmbServices').prop('disabled', true);
             }
             
-            if ($('#A-cmbvehicles').val() !== '' && $('#A-cmbvehicles').val() !== undefined) {
+            veh = $('#A-cmbvehicles').val();
+            if (veh !== '' && veh !== undefined) {
                 $('#A-txtDate').prop('disabled', false);
                 LoadTotalPrice('A-cmbvehicles','A-totalPrice');
+                $('#A-img-auto').hide();
+                LoadVehicleImage(veh, 'A-img-auto');
                 MCBM = true;
             } else {
                 $('#A-txtDate').prop('disabled', true);
@@ -323,12 +372,14 @@ function MantainmentTabs(t) {
         $('#M-totalPrice').html('').hide();
         ClearInputs('M-View');
         $('#M-View ons-list-item').remove();
+        $('#N-img-auto').hide();
     } else if (t === 'V') {
         $('#Bttn-M-T-New').removeClass('M-tab-active');
         $('#Bttn-M-T-View').addClass('M-tab-active');
         $('#Bttn-M-T-New').prop("disabled", false);
         $('#Bttn-M-T-View').prop("disabled", true);
         LoadVehicles('M-cmbvehicles');
+        $('#M-img-auto').hide();
     }
 }
 
@@ -397,6 +448,7 @@ function WorkshopTabs(t) {
             $('#Bttn-W-T-Description').prop("disabled", false);
             $('#Bttn-W-T-Route').prop("disabled", false);
             $('#A-totalPrice').html('').hide();
+            $('#A-img-auto').hide();
             LoadVehicles('A-cmbvehicles');
             break;
         case 'R':

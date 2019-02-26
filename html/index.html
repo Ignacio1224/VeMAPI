@@ -113,15 +113,22 @@
                 <div id="M-New">
                     <h2>Nuevo</h2>
                     <div>
-                        <ons-select select-id="N-cmbvehicles" onchange="MaintenanceBehaviour('V');">
-                            <option value="">Veh&iacute;culo</option>
-                        </ons-select>
-                        <ons-select select-id="N-cmbServices" onchange="MaintenanceBehaviour('S');" disabled>
-                            <option value="">Servicio</option>
-                        </ons-select>
-                        <ons-select select-id="N-cmbWorkshopsFav" onchange="MaintenanceBehaviour('W');" disabled>
-                            <option value="">Taller Favorito</option>
-                        </ons-select>
+                        <div>
+                            <ons-select select-id="N-cmbvehicles" onchange="MaintenanceBehaviour('V');">
+                                <option value="">Veh&iacute;culo</option>
+                            </ons-select>
+                            <img src="#" alt="Imagen del auto" id="N-img-auto" class="vehicleImageIcon">
+                        </div>
+                        <div>
+                            <ons-select select-id="N-cmbServices" onchange="MaintenanceBehaviour('S');" disabled>
+                                <option value="">Servicio</option>
+                            </ons-select>
+                        </div>
+                        <div>
+                            <ons-select select-id="N-cmbWorkshopsFav" onchange="MaintenanceBehaviour('W');" disabled>
+                                    <option value="">Taller Favorito</option>
+                            </ons-select>
+                        </div>
                     </div>
 
                     <div>
@@ -150,6 +157,7 @@
                     </ons-select>
                     
                     <span id="M-totalPrice" style="margin-left: 2em;"></span>
+                    <img src="#" alt="Imagen del auto" id="M-img-auto" class="vehicleImageIcon">                    
                 </div>
             </div>
         </ons-page>
@@ -198,6 +206,7 @@
                                     <option value="">Auto</option>
                                 </ons-select>
                                 <span id="A-totalPrice" style="margin-left: 2em;"></span>
+                                <img src="#" alt="Imagen del auto" id="A-img-auto" class="vehicleImageIcon">
                             </ons-list-item>
                             <ons-list-item>
                                 <ons-input id="A-txtDate" modifier="underbar" type="date" onchange="MaintenanceBehaviour('Da');" float disabled></ons-input>
@@ -247,7 +256,7 @@
                 <img id="V-image" alt="Add Image" style="width: 100%" src="">
                 <div class="content">
                     <div>
-                        <ons-button onclick="ChangeImage();">
+                        <ons-button onclick="AddVehicleImage();">
                             <ons-icon icon="ion-image"></ons-icon>
                         </ons-button>
                     </div>
