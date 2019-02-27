@@ -25,7 +25,7 @@
     <!-- <plugin name="cordova-plugin-vibration" spec="~3.1.0" /> -->
     <plugin name="cordova-plugin-device" spec="~2.0.2" />
     <!-- <plugin name="cordova-plugin-contacts" spec="~2.3.1" /> -->
-    <plugin name="cordova-plugin-camera" spec="~2.4.1" />
+    <plugin name="cordova-plugin-camera" spec="2.4.1" />
     
     <!-- <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
     <preference name="SplashScreen" value="screen" />
