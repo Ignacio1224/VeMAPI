@@ -38,12 +38,12 @@
     <allow-intent href="https://*/*" />
     <!-- <allow-intent href="tel:*" /> -->
     <!-- <allow-intent href="sms:*" /> -->
-    <allow-intent href="mailto:*" />
+    <!-- <allow-intent href="mailto:*" /> -->
     <allow-intent href="geo:*" />
     
-    <!-- <platform name="android">
+    <platform name="android">
         <allow-intent href="market:*" />
-        <icon density="ldpi" src="res/icons/android/drawable-ldpi-icon.png" />
+        <!-- <icon density="ldpi" src="res/icons/android/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="res/icons/android/drawable-mdpi-icon.png" />
         <icon density="hdpi" src="res/icons/android/drawable-hdpi-icon.png" />
         <icon density="xhdpi" src="res/icons/android/drawable-xhdpi-icon.png" />
@@ -61,7 +61,7 @@
         <splash density="port-hdpi" src="res/screens/android/drawable-port-hdpi-screen.png" />
         <splash density="port-xhdpi" src="res/screens/android/drawable-port-xhdpi-screen.png" />
         <splash density="port-xxhdpi" src="res/screens/android/drawable-port-xxhdpi-screen.png" />
-        <splash density="port-xxxhdpi" src="res/screens/android/drawable-port-xxxhdpi-screen.png" />
-    </platform> -->
+        <splash density="port-xxxhdpi" src="res/screens/android/drawable-port-xxxhdpi-screen.png" /> -->
+    </platform>
     
 </widget>

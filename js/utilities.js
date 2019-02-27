@@ -148,7 +148,6 @@ function InitDatabase() {
             tx.executeSql("CREATE TABLE IF NOT EXISTS VehicleImage (VehicleRegistration, Url)", []);
         }
     );
-    // AddImageDatabase('asd-7894', addImage);
 }
 
 
@@ -604,9 +603,4 @@ function ValidateEmail(mail) {
         valid = true;
     }
     return (valid);
-}
-
-
-function VehicleImage(veh) {
-
 }

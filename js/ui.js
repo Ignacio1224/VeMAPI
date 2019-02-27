@@ -104,7 +104,6 @@ function DisplayWCard() {
     </ons-card>
     `);
     
-    // REVISARRRR
     setTimeout(() => {
         if (SearchFavouriteWorkshop(workshop.GetId())) {
             $('#W-favourite').prop("checked", true);
