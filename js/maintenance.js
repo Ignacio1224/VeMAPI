@@ -1,4 +1,17 @@
 class Maintenance {
+
+    /**
+     * Constructor
+     * @param {String} vehicle 
+     * @param {String} service 
+     * @param {String} workshop 
+     * @param {String} date 
+     * @param {String} time 
+     * @param {String} description 
+     * @param {String} kilometers 
+     * @param {String} price 
+     * @param {String} id 
+     */
     constructor(vehicle, service, workshop, date, time, description, kilometers, price, id) {
         this.vehicle = vehicle;
         this.service = service;
@@ -119,3 +132,4 @@ class Maintenance {
         return maintenance;
     }
 }
+

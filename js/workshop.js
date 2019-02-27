@@ -1,7 +1,7 @@
 class Workshop {
 
     /**
-     * 
+     * Constructor
      * @param {String} service 
      * @param {String} address 
      * @param {String} phone 
