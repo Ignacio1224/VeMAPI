@@ -12,14 +12,14 @@
     <!-- ONSEN-UI -->
     <link rel="stylesheet" href="./frameworks/onsen-ui/css/onsenui.min.css">
     <link rel="stylesheet" href="./frameworks/onsen-ui/css/onsen-css-components.min.css">
-    
+
     <!-- JS -->
     <!-- JQuery -->
     <script src="./frameworks/jquery-3.3.1/jquery.js"></script>
     <!-- ONSEN-UI -->
     <script src="./frameworks/onsen-ui/js/onsenui.min.js"></script>
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABRQMj4Q2uNbBRfICEW_k4V3nFrcfV3Yw"></script>
     <!-- Nano's -->
     <script src="./img/addImage.js"></script>
     <script src="./js/vehicle.js"></script>
@@ -33,7 +33,7 @@
     <title>VeMAPI</title>
 </head>
 
-<body>    
+<body>
     <ons-page id="LogIn">
         <div style="text-align: center; margin-top: 30px;">
             <h2>Log In</h2>
@@ -126,23 +126,28 @@
                         </div>
                         <div>
                             <ons-select select-id="N-cmbWorkshopsFav" onchange="MaintenanceBehaviour('W');" disabled>
-                                    <option value="">Taller Favorito</option>
+                                <option value="">Taller Favorito</option>
                             </ons-select>
                         </div>
                     </div>
 
                     <div>
-                        <ons-input id="N-txtDate" modifier="underbar" type="date" float onchange="MaintenanceBehaviour('Da');" disabled></ons-input>
-                        <ons-input id="N-txtTime" modifier="underbar" type="time" float onchange="MaintenanceBehaviour('T');" disabled></ons-input>
+                        <ons-input id="N-txtDate" modifier="underbar" type="date" float onchange="MaintenanceBehaviour('Da');"
+                            disabled></ons-input>
+                        <ons-input id="N-txtTime" modifier="underbar" type="time" float onchange="MaintenanceBehaviour('T');"
+                            disabled></ons-input>
                     </div>
                     <div>
-                        <textarea id="N-txtDescription" rows="4" class="textarea" placeholder="Descripción" onkeyup="MaintenanceBehaviour('De');" disabled></textarea>
+                        <textarea id="N-txtDescription" rows="4" class="textarea" placeholder="Descripción" onkeyup="MaintenanceBehaviour('De');"
+                            disabled></textarea>
                     </div>
                     <div>
-                        <ons-input id="N-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje" onkeyup="MaintenanceBehaviour('K');" float disabled></ons-input>
+                        <ons-input id="N-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje"
+                            onkeyup="MaintenanceBehaviour('K');" float disabled></ons-input>
                     </div>
                     <div>
-                        <ons-input id="N-txtPrice" modifier="underbar" type="number" placeholder="Precio" onkeyup="MaintenanceBehaviour('P');" float disabled></ons-input>
+                        <ons-input id="N-txtPrice" modifier="underbar" type="number" placeholder="Precio" onkeyup="MaintenanceBehaviour('P');"
+                            float disabled></ons-input>
                     </div>
 
                     <div id="N-DAdd">
@@ -155,9 +160,9 @@
                     <ons-select select-id="M-cmbvehicles" onchange="LoadTotalPrice('M-cmbvehicles', 'M-totalPrice');">
                         <option value="">Auto</option>
                     </ons-select>
-                    
+
                     <span id="M-totalPrice" style="margin-left: 2em;"></span>
-                    <img src="#" alt="Imagen del auto" id="M-img-auto" class="vehicleImageIcon">                    
+                    <img src="#" alt="Imagen del auto" id="M-img-auto" class="vehicleImageIcon">
                 </div>
             </div>
         </ons-page>
@@ -209,19 +214,22 @@
                                 <img src="#" alt="Imagen del auto" id="A-img-auto" class="vehicleImageIcon">
                             </ons-list-item>
                             <ons-list-item>
-                                <ons-input id="A-txtDate" modifier="underbar" type="date" onchange="MaintenanceBehaviour('Da');" float disabled></ons-input>
-                                <ons-input id="A-txtTime" modifier="underbar" type="time" onchange="MaintenanceBehaviour('T');" float disabled></ons-input>
-                            </ons-list-item>
-                            <ons-list-item>
-                                <textarea id="A-txtDescription" rows="4" class="textarea" placeholder="Descripción" onkeyup="MaintenanceBehaviour('De');"
-                                    disabled></textarea>
-                            </ons-list-item>
-                            <ons-list-item>
-                                <ons-input id="A-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje" onkeyup="MaintenanceBehaviour('K');"
+                                <ons-input id="A-txtDate" modifier="underbar" type="date" onchange="MaintenanceBehaviour('Da');"
+                                    float disabled></ons-input>
+                                <ons-input id="A-txtTime" modifier="underbar" type="time" onchange="MaintenanceBehaviour('T');"
                                     float disabled></ons-input>
                             </ons-list-item>
                             <ons-list-item>
-                                <ons-input id="A-txtPrice" modifier="underbar" type="number" placeholder="Precio" onkeyup="MaintenanceBehaviour('P');" float disabled></ons-input>
+                                <textarea id="A-txtDescription" rows="4" class="textarea" placeholder="Descripción"
+                                    onkeyup="MaintenanceBehaviour('De');" disabled></textarea>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <ons-input id="A-txtKilometers" modifier="underbar" type="Number" placeholder="Kilomentraje"
+                                    onkeyup="MaintenanceBehaviour('K');" float disabled></ons-input>
+                            </ons-list-item>
+                            <ons-list-item>
+                                <ons-input id="A-txtPrice" modifier="underbar" type="number" placeholder="Precio"
+                                    onkeyup="MaintenanceBehaviour('P');" float disabled></ons-input>
                             </ons-list-item>
                         </ons-list>
                         <p style="text-align: center; margin-top: 30px;">

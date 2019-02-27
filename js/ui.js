@@ -97,7 +97,7 @@ function DisplayWCard() {
                 </ons-list-item>
                 <ons-list-item>
                     <label for="W-favourite" style="margin-right: 1em;">Marcar como favorito</label>
-                    <ons-checkbox input-id="W-favourite" onclick="AddFavouriteWorkshop(${workshop.GetId()})"></ons-checkbox>
+                    <ons-checkbox input-id="W-favourite" onclick="ToggleFavouriteWorkshop(${workshop.GetId()})"></ons-checkbox>
                 </ons-list-item>
             </ons-list>
         </div>
@@ -142,6 +142,22 @@ function FillMaintenances(m) {
 }
 
 
+function FillMap() {
+    const serv = $('#W-cmbServices').val();
+    if (serv !== '') {
+        LoadWorkshops(serv).done(() => {
+            InitMap(workshops);
+            $('#googleMap').show();
+        });
+    } else {
+        $('#googleMap').html('');
+        $('#W-TabPane').hide();
+        $('#W-C-Description').hide();
+        $('#W-C-Agenda').hide();
+    }
+}
+
+
 function LoadLogInData(usu = null) {
     GetCurrentPosition();
     InitDatabase();
@@ -150,10 +166,10 @@ function LoadLogInData(usu = null) {
     LoadServices('N-cmbServices');
     $('#N-img-auto').hide();
 
-    if (usu) {
-        ToggleWindows(SV);
-    } else {
+    if (usu == null) {
         ToggleWindows(LV);
+    } else {
+        ToggleWindows(SV);
     }
 }
 
@@ -392,6 +408,11 @@ function ShowModal(value) {
     setTimeout(function () {
         modal.hide('fold');
     }, 2000);
+}
+
+
+function ToggleFavouriteWorkshop(idWrk) {
+    SaveFavouriteWorkshop(idWrk, $('#W-favourite').is(':checked'));
 }
 
 

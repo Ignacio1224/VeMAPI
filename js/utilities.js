@@ -20,31 +20,6 @@ let database;
 
 
 
-function AddFavouriteWorkshop(wrk) {
-
-    if ($('#W-favourite').is(':checked')) {
-
-        database.transaction((tx) => {
-            tx.executeSql("INSERT INTO FavouriteWorkshop VALUES (?,?)", [user.GetEmail(), wrk], () => {
-                ShowModal('Añadido a favoritos');
-            }, () => {
-                ShowModal('No se pudo añadir a favoritos');
-            });
-        });
-    } else {
-
-        database.transaction((tx) => {
-            tx.executeSql("DELETE FROM FavouriteWorkshop WHERE Id=?", [wrk], () => {
-                ShowModal('Removido de favoritos');
-            }, () => {
-                ShowModal('No se pudo remover de favoritos');
-            });
-        });
-    }
-
-    LoadFavouriteWorkshops();
-}
-
 
 function AddImageDatabase(vehicle, url) {
     database.transaction((tx) => {
@@ -105,21 +80,6 @@ function ClearInputs(place) {
 
     for (i of inputs) {
         $(i).val('');
-    }
-}
-
-
-function FillMap() {
-    const serv = $('#W-cmbServices').val();
-    if (serv !== '') {
-        LoadWorkshops(serv).done(() => {
-            InitMap(workshops)
-        });
-    } else {
-        $('#googleMap').html('');
-        $('#W-TabPane').hide();
-        $('#W-C-Description').hide();
-        $('#W-C-Agenda').hide();
     }
 }
 
@@ -230,7 +190,7 @@ function LoadFavouriteWorkshops() {
     return new Promise((resolve, reject) => {
         database.transaction(
             (tx) => {
-                tx.executeSql("SELECT Email, Id FROM FavouriteWorkshop", [], (tx, results) => {
+                tx.executeSql("SELECT Id FROM FavouriteWorkshop WHERE Email=?", [user.GetEmail()], (tx, results) => {
                     for (r of results.rows) {
                         favouriteWorkshops.push(r);
                     }
@@ -369,9 +329,11 @@ function LogIn(v = false, usu = null) {
         ToggleWindows(LS);
 
     } else {
-
+        
+        database = window.openDatabase('Favourites', '1.0', 'Database for favourite workshops', 1024 * 1024 * 4);
+        
         if (usu) {
-            LoadLogInData();
+            LoadLogInData(usu);
         } else {
 
             let email = $('#L-email').val();
@@ -392,8 +354,6 @@ function LogIn(v = false, usu = null) {
 
                     success: function (response) {
                         user = new User(response.description.usuario.id, response.description.usuario.email, response.description.usuario.telefono, null, response.description.token);
-
-                        database = window.openDatabase('Favourites', '1.0', 'Database for favourite workshops', 1024 * 1024 * 4);
 
                         LoadLogInData(usu);
                     },
@@ -496,6 +456,32 @@ function RegisterVehicle() {
 }
 
 
+function SaveFavouriteWorkshop(wrk, add = false) {
+
+    if (add) {
+
+        database.transaction((tx) => {
+            tx.executeSql("INSERT INTO FavouriteWorkshop VALUES (?,?)", [user.GetEmail(), wrk], () => {
+                ShowModal('Añadido a favoritos');
+            }, () => {
+                ShowModal('No se pudo añadir a favoritos');
+            });
+        });
+    } else {
+
+        database.transaction((tx) => {
+            tx.executeSql("DELETE FROM FavouriteWorkshop WHERE Id=? AND Email=?", [wrk, user.GetEmail()], () => {
+                ShowModal('Removido de favoritos');
+            }, () => {
+                ShowModal('No se pudo remover de favoritos');
+            });
+        });
+    }
+
+    LoadFavouriteWorkshops();
+}
+
+
 function SearchFavouriteWorkshop(id) {
     let i = 0;
     let w = null;
@@ -583,7 +569,9 @@ function SignIn(v = false) {
                     dataType: "JSON",
 
                     success: function (response) {
-                        user = new User(response.description.usuario.id, response.description.usuario.email, response.description.usuario.telefono, sPassword, response.token);
+                        console.log(response);
+                        
+                        user = new User(response.description.usuario.id, response.description.usuario.email, response.description.usuario.telefono, null, response.description.token);
                         LogIn(true, user);
                     },
 
